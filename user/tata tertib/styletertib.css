@@ -1,0 +1,1245 @@
+.panduan-tata-tertib {
+  background-color: #f5f7fb;
+  width: 100%;
+  min-width: auto;
+  min-height: 2677px;
+  position: relative;
+  padding-top: 72px;
+}
+
+/* Ensure navbar and footer remain clickable */
+.header-navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+  width: 100% !important;
+}
+
+.footer {
+  position: relative !important;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+}
+
+.panduan-tata-tertib .main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 1983px;
+  align-items: flex-start;
+  position: absolute;
+  top: 0px;
+  left: 0;
+}
+
+.panduan-tata-tertib .hero-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 480px;
+  align-items: flex-start;
+  padding: 79.29px 0px 80px;
+  position: relative;
+  background: linear-gradient(180deg, #E2F7FF 0%, var(--surface-light) 100%);
+}
+
+.panduan-tata-tertib .container {
+  position: relative;
+  max-width: 1200px;
+  width: 100%;
+  height: 241.59px;
+}
+
+.panduan-tata-tertib .overlay-border-wrapper {
+  display: flex;
+  width: calc(100% - 48px);
+  align-items: flex-start;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 24px;
+}
+
+.panduan-tata-tertib .overlay-border {
+  display: flex;
+  width: 80px;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #ffffff1a;
+  border-radius: 40px;
+  border: 1px solid;
+  border-color: #ffffff33;
+  backdrop-filter: blur(5px) brightness(100%);
+  -webkit-backdrop-filter: blur(5px) brightness(100%);
+}
+
+.panduan-tata-tertib .checklist {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.panduan-tata-tertib .heading {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 48px);
+  align-items: center;
+  padding: 0px 0px 0.59px;
+  position: absolute;
+  top: 103px;
+  left: 24px;
+}
+
+.panduan-tata-tertib .text-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  height: 90px;
+  margin-top: -1px;
+  text-shadow: 0px 4px 12px #0000001a;
+  font-family: "Inter-ExtraBold", Helvetica;
+  font-weight: 800;
+  color: #0b2545;
+  font-size: 56px;
+  text-align: center;
+  letter-spacing: -1.5px;
+  line-height: 89.6px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .div-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 48px);
+  align-items: center;
+  position: absolute;
+  top: 210px;
+  left: 24px;
+}
+
+.panduan-tata-tertib .text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 203.73px;
+  height: 32px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #0050ade6;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 32px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .div {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  align-items: flex-start;
+  gap: 48px;
+  padding: 0px 24px;
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .container-2 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 48px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .container-3 {
+  display: flex;
+  flex-direction: column;
+  width: 528px;
+  align-items: flex-start;
+  gap: 15px;
+  position: relative;
+  align-self: stretch;
+}
+
+.panduan-tata-tertib .container-4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .polije-logo {
+  position: relative;
+  width: 52px;
+  height: 46px;
+}
+
+.panduan-tata-tertib .dcbf-f-e {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  width: 47px;
+  height: 46px;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.panduan-tata-tertib .text-2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 215.05px;
+  height: 27px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 27px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .div-wrapper-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .p {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 22.4px;
+}
+
+.panduan-tata-tertib .container-5 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 1px 0px 0px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .div-2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .SVG {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.panduan-tata-tertib .text-3 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 174.47px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .iconify-icon-wrapper {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.panduan-tata-tertib .div-wrapper-3 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .vector {
+  position: absolute;
+  width: 95.83%;
+  height: 95.83%;
+  top: 4.17%;
+  left: 4.17%;
+}
+
+.panduan-tata-tertib .text-4 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 133.45px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-6 {
+  display: flex;
+  flex-direction: column;
+  width: 264px;
+  align-items: flex-start;
+  gap: 24px;
+  position: relative;
+  align-self: stretch;
+}
+
+.panduan-tata-tertib .text-wrapper-2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  margin-top: -1px;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 24px;
+}
+
+.panduan-tata-tertib .list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .container-7 {
+  display: flex;
+  width: 14px;
+  height: 14px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.panduan-tata-tertib .vector-wrapper {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.panduan-tata-tertib .img {
+  position: absolute;
+  width: 66.67%;
+  height: 79.17%;
+  top: 20.83%;
+  left: 33.33%;
+}
+
+.panduan-tata-tertib .text-5 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 55.17px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-wrapper-3 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 103px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-6 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 58.06px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-wrapper-4 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 70.47px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-8 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .container-9 {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.panduan-tata-tertib .text-7 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 65.92px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-10 {
+  display: flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.panduan-tata-tertib .vector-2 {
+  position: absolute;
+  width: 75.00%;
+  height: 95.83%;
+  top: 4.17%;
+  left: 25.00%;
+}
+
+.panduan-tata-tertib .text-8 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 65px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-9 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 35.33px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .horizontal-border {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0px 0px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-color: #1e293b;
+}
+
+.panduan-tata-tertib .text-10 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 330.41px;
+  height: 21px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.header-navbar .nav-link {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+.header-navbar .dropdown-menu li a {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+
+.panduan-tata-tertib .rectangle {
+  position: absolute;
+  top: 16px;
+  left: 1378px;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.panduan-tata-tertib .container-17 {
+  display: flex;
+  flex-direction: column;
+  width: 1299px;
+  height: 1706px;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 16px 20px 80px;
+  position: absolute;
+  top: 621px;
+  left: calc(50.00% - 649px);
+}
+
+.panduan-tata-tertib .section {
+  width: 1265px;
+  flex: 0 0 auto;
+  margin-right: -6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #e8e8e8;
+  box-shadow:
+    0px 4px 6px -4px #00000005,
+    0px 10px 15px -3px #00000008;
+}
+
+.panduan-tata-tertib .background {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 32px 40px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: #ffffff;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-color: #e8e8e8;
+}
+
+.panduan-tata-tertib .background-2 {
+  position: relative;
+  width: 56px;
+  height: 56px;
+}
+
+.panduan-tata-tertib .text-13 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 252.56px;
+  height: 36px;
+  margin-top: -1px;
+  font-family: "Inter-ExtraBold", Helvetica;
+  font-weight: 800;
+  color: #000000;
+  font-size: 24px;
+  letter-spacing: -0.24px;
+  line-height: 36px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-18 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 40px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .container-19 {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .background-border {
+  width: 36px;
+  height: 36px;
+  background-color: #dbeafe;
+  border-radius: 18px;
+  border: 2px solid;
+  border-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.panduan-tata-tertib .overlay-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  background-color: #ffffff01;
+  border-radius: 18px;
+  box-shadow: 0px 0px 0px 2px #dbeafe;
+}
+
+.panduan-tata-tertib .text-14 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.91px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-20 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3px 0px 0.19px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .text-15 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 416.92px;
+  height: 28px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-16 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10.08px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-17 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 729.34px;
+  height: 28px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-18 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10.33px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-19 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 647.91px;
+  height: 28px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-20 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10.83px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-21 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3.1px 54.84px 0.28px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .text-21 {
+  position: relative;
+  width: 727.16px;
+  height: 55px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+}
+
+.panduan-tata-tertib .text-22 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9.95px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-23 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 578.75px;
+  height: 28px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-24 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10.39px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-25 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 448.36px;
+  height: 28px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-26 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9.31px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-22 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3.1px 49.22px 0.28px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .text-27 {
+  position: relative;
+  width: 732.78px;
+  height: 55px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+}
+
+.panduan-tata-tertib .text-28 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10.42px;
+  height: 24px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #0050ad;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-29 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 640.03px;
+  height: 28px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .section-2 {
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #e8e8e8;
+  box-shadow:
+    0px 4px 6px -4px #00000005,
+    0px 10px 15px -3px #00000008;
+}
+
+.panduan-tata-tertib .text-30 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 489.77px;
+  height: 36px;
+  margin-top: -1px;
+  font-family: "Inter-ExtraBold", Helvetica;
+  font-weight: 800;
+  color: #000000;
+  font-size: 24px;
+  letter-spacing: -0.24px;
+  line-height: 36px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .text-31 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 522.14px;
+  height: 28px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .container-23 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3.1px 14.73px 0.28px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .text-32 {
+  position: relative;
+  width: 767.27px;
+  height: 55px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+}
+
+.panduan-tata-tertib .section-3 {
+  height: 521px;
+  align-self: stretch;
+  width: 100%;
+  margin-bottom: -0.14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #e8e8e8;
+  box-shadow:
+    0px 4px 6px -4px #00000005,
+    0px 10px 15px -3px #00000008;
+}
+
+.panduan-tata-tertib .background-3 {
+  width: 56px;
+  height: 56px;
+  background-color: #dbe7fb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.panduan-tata-tertib .img-wrapper {
+  position: relative;
+  width: 28px;
+  height: 28px;
+}
+
+.panduan-tata-tertib .vector-4 {
+  position: absolute;
+  width: 87.50%;
+  height: 95.83%;
+  top: 4.17%;
+  left: 12.50%;
+}
+
+.panduan-tata-tertib .text-33 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 369.91px;
+  height: 36px;
+  margin-top: -1px;
+  font-family: "Inter-ExtraBold", Helvetica;
+  font-weight: 800;
+  color: #000000;
+  font-size: 24px;
+  letter-spacing: -0.24px;
+  line-height: 36px;
+  white-space: nowrap;
+}
+
+.panduan-tata-tertib .margin {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 0px 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .background-border-2 {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: #fef3c7;
+  border-radius: 8px;
+  border: 1px solid;
+  border-color: #f59e0b4c;
+}
+
+.panduan-tata-tertib .group-wrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.panduan-tata-tertib .group {
+  position: relative;
+  width: 83.33%;
+  height: 83.33%;
+  top: 8.33%;
+  left: 8.33%;
+}
+
+.panduan-tata-tertib .vector-5 {
+  position: absolute;
+  width: 105.00%;
+  height: 105.00%;
+  top: -5.00%;
+  left: -5.00%;
+}
+
+.panduan-tata-tertib .vector-6 {
+  position: absolute;
+  width: 55.00%;
+  height: 75.00%;
+  top: 25.00%;
+  left: 45.00%;
+}
+
+.panduan-tata-tertib .container-24 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 0.64px 0px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .text-34 {
+  position: relative;
+  width: 747.36px;
+  height: 96px;
+  margin-top: -1px;
+  font-family: "Inter-Medium", Helvetica;
+  font-weight: 500;
+  color: #92400e;
+  font-size: 15px;
+  letter-spacing: 0;
+  line-height: 24px;
+}
+
+.panduan-tata-tertib .container-25 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3.1px 55.33px 0.28px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .text-35 {
+  position: relative;
+  width: 726.67px;
+  height: 55px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+}
+
+.panduan-tata-tertib .container-26 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3.1px 11.27px 0.28px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.panduan-tata-tertib .text-36 {
+  position: relative;
+  width: 770.73px;
+  height: 55px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #949494;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 27.2px;
+}
+

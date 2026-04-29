@@ -1,0 +1,122 @@
+[
+    {
+        "id": 1,
+        "tanggal": "2024-03-29",
+        "peminjam": "Budi",
+        "judul_buku": "Atomic Habits",
+        "tgl_pinjam": "2024-03-28",
+        "tgl_jatuh_tempo": "2024-04-02",
+        "tgl_kembali": "2024-04-02",
+        "status": "Dikembalikan"
+    },
+    {
+        "id": 2,
+        "tanggal": "2024-03-27",
+        "peminjam": "Fita",
+        "judul_buku": "Bumi Manusia",
+        "tgl_pinjam": "2024-03-27",
+        "tgl_jatuh_tempo": "2024-04-03",
+        "tgl_kembali": "",
+        "status": "Terlambat"
+    },
+    {
+        "id": 3,
+        "tanggal": "2024-03-27",
+        "peminjam": "Ayu",
+        "judul_buku": "Filosofi Teras",
+        "tgl_pinjam": "2024-03-27",
+        "tgl_jatuh_tempo": "2024-04-01",
+        "tgl_kembali": "",
+        "status": "Terlambat"
+    },
+    {
+        "id": 4,
+        "tanggal": "2024-03-26",
+        "peminjam": "Cahyo",
+        "judul_buku": "Orang-Orang Biasa",
+        "tgl_pinjam": "2024-03-26",
+        "tgl_jatuh_tempo": "2024-04-01",
+        "tgl_kembali": "2024-04-01",
+        "status": "Dikembalikan"
+    },
+    {
+        "id": 5,
+        "tanggal": "2024-03-25",
+        "peminjam": "Nanda",
+        "judul_buku": "Laut Bercerita",
+        "tgl_pinjam": "2024-03-25",
+        "tgl_jatuh_tempo": "2024-03-30",
+        "tgl_kembali": "",
+        "status": "Terlambat"
+    },
+    {
+        "id": 6,
+        "tanggal": "2024-03-24",
+        "peminjam": "Rina",
+        "judul_buku": "Negeri 5 Menara",
+        "tgl_pinjam": "2024-03-24",
+        "tgl_jatuh_tempo": "2024-03-31",
+        "tgl_kembali": "",
+        "status": "Terlambat"
+    },
+    {
+        "id": 7,
+        "tanggal": "2024-03-22",
+        "peminjam": "Dimas",
+        "judul_buku": "Sapiens",
+        "tgl_pinjam": "2024-03-22",
+        "tgl_jatuh_tempo": "2024-03-29",
+        "tgl_kembali": "2024-03-28",
+        "status": "Dikembalikan"
+    },
+    {
+        "id": 8,
+        "tanggal": "2024-03-20",
+        "peminjam": "Lina",
+        "judul_buku": "Ayat-Ayat Cinta",
+        "tgl_pinjam": "2024-03-20",
+        "tgl_jatuh_tempo": "2024-03-27",
+        "tgl_kembali": "",
+        "status": "Terlambat"
+    },
+    {
+        "id": 9,
+        "tanggal": "2024-03-18",
+        "peminjam": "Fajar",
+        "judul_buku": "Madilog",
+        "tgl_pinjam": "2024-03-18",
+        "tgl_jatuh_tempo": "2024-03-25",
+        "tgl_kembali": "",
+        "status": "Terlambat"
+    },
+    {
+        "id": 10,
+        "tanggal": "2024-03-15",
+        "peminjam": "Salsa",
+        "judul_buku": "Rich Dad Poor Dad",
+        "tgl_pinjam": "2024-03-15",
+        "tgl_jatuh_tempo": "2024-03-22",
+        "tgl_kembali": "2024-03-21",
+        "status": "Dikembalikan"
+    },
+    {
+        "id": 11,
+        "tanggal": "2024-03-12",
+        "peminjam": "Yoga",
+        "judul_buku": "Cantik Itu Luka",
+        "tgl_pinjam": "2024-03-12",
+        "tgl_jatuh_tempo": "2024-03-19",
+        "tgl_kembali": "",
+        "status": "Terlambat"
+    },
+    {
+        "id": 12,
+        "tanggal": "2024-03-10",
+        "peminjam": "Mira",
+        "judul_buku": "Bumi",
+        "tgl_pinjam": "2024-03-10",
+        "tgl_jatuh_tempo": "2024-03-17",
+        "tgl_kembali": "2024-03-16",
+        "status": "Dikembalikan"
+    }
+]

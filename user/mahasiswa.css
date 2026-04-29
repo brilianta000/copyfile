@@ -1,0 +1,248 @@
+/* =====================
+   PAGE WRAPPER
+===================== */
+.page-wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem 1rem;
+}
+
+/* =====================
+   SECTION TITLE
+===================== */
+.section-title {
+  font-family: 'Inter-SemiBold', Helvetica, sans-serif;
+  font-size: 0.95rem;
+  color: #000;
+  margin: 1.25rem 0 0.75rem 0;
+}
+
+/* =====================
+   PROFILE CARD
+===================== */
+.profile-card {
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.profile-name {
+  font-family: 'Inter-Bold', Helvetica, sans-serif;
+  font-size: 1.3rem;
+  color: #000;
+  margin-bottom: 0.6rem;
+}
+
+.badge-info {
+  background-color: #dbe7fb;
+  color: #0050ad;
+  font-family: 'Inter-Medium', Helvetica, sans-serif;
+  font-size: 0.72rem;
+  border-radius: 50px;
+  padding: 0.25rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* =====================
+   BOOK CARD
+===================== */
+.book-card {
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.book-cover {
+  width: 52px;
+  height: 76px;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background-color: #d1d5db;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.book-title {
+  font-family: 'Inter-SemiBold', Helvetica, sans-serif;
+  font-size: 0.82rem;
+  color: #000;
+  margin-bottom: 0.35rem;
+}
+
+/* =====================
+   FINE BOX
+===================== */
+.fine-box {
+  background-color: #e8e8e8;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fine-label {
+  font-family: 'Inter-Medium', Helvetica, sans-serif;
+  font-size: 0.68rem;
+  color: #949494;
+  display: block;
+}
+
+.fine-calc {
+  font-family: 'Inter-Bold', Helvetica, sans-serif;
+  font-size: 0.75rem;
+  color: #000;
+}
+
+/* =====================
+   DATE ROW
+===================== */
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed #e8e8e8;
+  margin-top: 0.6rem;
+}
+
+.date-label {
+  font-family: 'Inter-SemiBold', Helvetica, sans-serif;
+  font-size: 0.6rem;
+  color: #949494;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.date-val {
+  font-family: 'Inter-Medium', Helvetica, sans-serif;
+  font-size: 0.75rem;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* =====================
+   BADGES (STATUS)
+===================== */
+.badge-late,
+.badge-unpaid {
+  background-color: #ff0808;
+  color: #fff;
+}
+
+.badge-ontime {
+  background-color: #00c417;
+  color: #fff;
+}
+
+.badge-fine-blue,
+.badge-waiting {
+  background-color: #dbe7fb;
+  color: #0050ad;
+}
+
+.badge-late,
+.badge-ontime,
+.badge-fine-blue,
+.badge-unpaid,
+.badge-waiting {
+  font-family: 'Inter-SemiBold', Helvetica, sans-serif;
+  font-size: 0.68rem;
+  border-radius: 50px;
+  padding: 0.2rem 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+/* =====================
+   RESERVASI CARD
+===================== */
+.reservasi-card {
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* =====================
+   STAT CARDS
+===================== */
+.stat-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.stat-card {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 0.85rem;
+}
+
+.stat-card-blue {
+  flex: 1;
+  background-color: #0050ad;
+  border-radius: 10px;
+  padding: 0.85rem;
+}
+
+.stat-label {
+  font-family: 'Inter-Medium', Helvetica, sans-serif;
+  font-size: 0.65rem;
+  color: #949494;
+}
+
+.stat-value {
+  font-family: 'Inter-Bold', Helvetica, sans-serif;
+  font-size: 1.3rem;
+  color: #000;
+}
+
+.stat-sub {
+  font-family: 'Inter-Medium', Helvetica, sans-serif;
+  font-size: 0.6rem;
+  color: #949494;
+}
+
+/* versi putih */
+.stat-label-white,
+.stat-value-white,
+.stat-sub-white {
+  color: #fff;
+}
+
+/* =====================
+   SKELETON (LOADING)
+===================== */
+.skeleton-card {
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+}
+
+.skeleton-line {
+  width: 50px;
+  height: 5px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+}

@@ -1,0 +1,277 @@
+/* =============================================
+   AKUN.CSS — Halaman Profil Admin
+   ============================================= */
+
+:root {
+    --sidebar-width: 160px;
+    --topbar-height: 64px;
+    --blue-primary: #0050ad;
+    --blue-light: #dbe7fb;
+    --blue-dark: #003f8a;
+    --red-soft: #fce8e6;
+    --red-text: #c5221f;
+    --text-main: #1a1a1a;
+    --text-muted: #888;
+    --border: #ebebeb;
+    --bg-page: #e8eaf0;
+    --radius-card: 16px;
+    --radius-btn: 10px;
+}
+
+/* ===== LAYOUT ===== */
+.main-content {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--topbar-height);
+    background-color: var(--bg-page);
+    min-height: calc(100vh - var(--topbar-height));
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 36px 20px 48px;
+}
+
+.akun-wrap {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ===== ALERT SUCCESS ===== */
+.alert-success {
+    background: #e6f4ea;
+    color: #1a6e35;
+    border: 1px solid #b7dfbf;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== PROFILE CARD ===== */
+.profile-card {
+    background: #fff;
+    border-radius: var(--radius-card);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem 2.5rem;
+    width: 100%;
+}
+
+.profile-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1.25rem;
+    letter-spacing: .01em;
+}
+
+/* ===== IDENTITY ROW ===== */
+.identity-row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1.75rem;
+}
+
+.avatar-box {
+    width: 100px;
+    height: 110px;
+    border: 2px solid #d0d0d0;
+    border-radius: 12px;
+    background: #f4f6fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 3.5rem;
+    color: #aab4c4;
+}
+
+.identity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding-top: 0.25rem;
+}
+
+.identity-row-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.identity-key {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    width: 64px;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+.identity-val {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.identity-val-sm {
+    font-size: 0.9rem;
+    color: #444;
+    font-weight: 500;
+}
+
+.badge-jabatan {
+    background: var(--blue-light);
+    color: var(--blue-primary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 0.25rem 0.9rem;
+    display: inline-block;
+}
+
+/* ===== DIVIDER ===== */
+.card-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 -2.5rem 1.5rem -2.5rem;
+}
+
+/* ===== INFO FIELDS (MODE VIEW) ===== */
+.info-field {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 0.85rem;
+}
+
+.info-field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    width: 95px;
+    flex-shrink: 0;
+    font-size: 0.83rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.info-field-label i {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.info-field-value {
+    flex: 1;
+    background: var(--blue-light);
+    border-radius: 8px;
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    color: #222;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+/* ===== FORM EDIT (MODE EDIT) ===== */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 0.85rem;
+}
+
+.form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-label i { color: var(--blue-primary); font-size: 0.85rem; }
+
+.form-input {
+    width: 100%;
+    padding: 0.55rem 1rem;
+    border: 1.5px solid #d8e3f4;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #222;
+    background: #f7f9ff;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.form-input:focus {
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 3px rgba(0,80,173,0.1);
+    background: #fff;
+}
+
+/* ===== TOMBOL ===== */
+.btn-edit-profil {
+    width: 100%;
+    height: 46px;
+    background: var(--blue-primary);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+    transition: background .2s, transform .15s;
+    letter-spacing: .01em;
+}
+
+.btn-edit-profil:hover {
+    background: var(--blue-dark);
+    transform: translateY(-1px);
+}
+
+.btn-logout {
+    width: 100%;
+    height: 46px;
+    background: var(--red-soft);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--red-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background .2s, transform .15s;
+}
+
+.btn-logout:hover {
+    background: #f5c6c2;
+    transform: translateY(-1px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .main-content { padding: 20px 12px 40px; }
+    .profile-card { padding: 1.5rem 1.25rem; }
+    .card-divider { margin-left: -1.25rem; margin-right: -1.25rem; }
+    .identity-row { gap: 1rem; }
+    .avatar-box { width: 80px; height: 90px; font-size: 2.8rem; }
+}

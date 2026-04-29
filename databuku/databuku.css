@@ -1,0 +1,55 @@
+:root { --navy: #001f3f; --primary: #004aad; --bg: #f0f2f5; }
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+body { margin: 0; background: var(--bg); display: flex; }
+
+.container { display: flex; width: 100%; }
+
+/* SIDEBAR RESPONSIF */
+.sidebar { width: 260px; background: #002d62; min-height: 100vh; color: white; transition: 0.3s; flex-shrink: 0; }
+.brand { padding: 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.nav-links { list-style: none; padding: 20px 0; margin: 0; }
+.nav-links li { padding: 12px 25px; margin-bottom: 5px; }
+.nav-links li.active { background: rgba(255,255,255,0.1); border-left: 4px solid white; }
+.nav-links a { color: white; text-decoration: none; display: flex; gap: 15px; font-size: 14px; font-weight: 500; }
+
+@media (max-width: 768px) {
+    .sidebar { width: 70px; }
+    .sidebar h2, .sidebar a span { display: none; }
+}
+
+/* CONTENT */
+.content { flex-grow: 1; overflow-x: hidden; }
+header { background: var(--navy); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+.title-header { font-size: 20px; letter-spacing: 1px; margin: 0; }
+
+.main-card { background: white; margin: 25px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.header-table { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+.back-btn { border: 1px solid #ddd; background: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+/* MODAL DETAIL STYLE FIGMA */
+.detail-box { width: 400px !important; }
+.detail-content { font-size: 14px; line-height: 1.8; }
+.detail-item span { display: inline-block; width: 100px; font-weight: 500; }
+.badge-status { background: #10b981; color: white; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+
+/* MODAL EDIT CATEGORY GRID */
+.modal-category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 12px; margin-top: 5px; }
+
+/* TABLE & PAGINATION */
+.table-responsive { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+th { text-align: left; padding: 15px; color: var(--primary); font-size: 14px; border-bottom: 2px solid #f0f0f0; }
+td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+.pagination-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+.nav-page { display: flex; gap: 5px; }
+.nav-page a { text-decoration: none; padding: 8px 12px; border: 1px solid #ddd; color: #333; border-radius: 4px; font-size: 13px; }
+.nav-page a.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* MODAL BASE */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 9999; }
+.modal-box { background: white; padding: 25px; border-radius: 15px; width: 500px; position: relative; }
+.modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.close { cursor: pointer; font-size: 20px; }
+.modal-actions { display: flex; justify-content: space-between; margin-top: 25px; }
+.btn-del { background: #ef4444; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; }
+.btn-save { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; }

@@ -1,0 +1,116 @@
+    /* =====================
+       SIDEBAR — FIXED
+    ===================== */
+    .sidebar {
+      width: 160px;
+      height: 100vh;
+      background: linear-gradient(180deg, #002147 0%, #0050ad 100%);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem 0.75rem;
+      overflow-y: auto;
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+      padding: 0 0.25rem;
+    }
+    .sidebar-brand-icon {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: #1a6b3c;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-brand-text {
+      font-family: 'Inter-Bold', Helvetica, sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      font-weight: 700;
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 0.5rem;
+      color: #fff;
+      font-family: 'Inter-SemiBold', Helvetica, sans-serif;
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .sidebar-item.active { background-color: rgba(255,255,255,0.18); }
+    .sidebar-item:hover:not(.active) { background-color: rgba(255,255,255,0.08); color: #fff; }
+    .sidebar-subitem {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      color: #fff;
+      font-family: 'Inter-Bold', Helvetica, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      border-radius: 0.4rem;
+      transition: background 0.15s;
+    }
+    .sidebar-subitem:hover { background-color: rgba(255,255,255,0.08); color: #fff; }
+    .sidebar-subitem i { font-size: 0.9rem; flex-shrink: 0; }
+
+    /* =====================
+       TOPBAR — FIXED
+    ===================== */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 160px;
+      right: 0;
+      height: 60px;
+      background-color: #002147;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 190;
+    }
+    .topbar-title {
+      font-family: 'Inter-Bold', Helvetica, sans-serif;
+      font-size: 1.4rem;
+      color: #fff;
+      font-weight: 700;
+    }
+    .topbar-avatar {
+      width: 40px; height: 40px;
+      background-color: #1e3f6e;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .sidebar-subitem.active {
+  background-color: rgba(255,255,255,0.18);
+}
+
+.sidebar-subitem:hover:not(.active) {
+  background-color: rgba(255,255,255,0.08);
+  color: #fff;
+}

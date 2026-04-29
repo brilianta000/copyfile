@@ -1,0 +1,364 @@
+/* =============================================
+   DASH.CSS — Dashboard Admin Perpustakaan
+   ============================================= */
+
+/* Reset & Base */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    background: #f0f2f7;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: #1e2a3a;
+    margin: 0;
+}
+
+/* =============================================
+   LAYOUT
+   ============================================= */
+:root {
+    --sidebar-width: 60px;
+    --topbar-height: 14px;
+}
+
+.main-content {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--topbar-height);
+    padding: 28px 32px;
+    min-height: calc(100vh - var(--topbar-height));
+}
+
+.dash-container {
+    max-width: 1300px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* =============================================
+   STAT GRID (4 kartu atas)
+   ============================================= */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    color: #1e2a3a;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #8492a6;
+    font-weight: 500;
+    letter-spacing: .02em;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.icon-blue   { background: #e8f0fe; color: #1a73e8; }
+.icon-green  { background: #e6f4ea; color: #188038; }
+.icon-orange { background: #fff3e0; color: #e65100; }
+.icon-red    { background: #fce8e6; color: #c5221f; }
+
+/* =============================================
+   BARIS UTAMA (tabel + kolom kanan)
+   ============================================= */
+.dash-main {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+    align-items: start;
+}
+
+/* =============================================
+   CARD UMUM
+   ============================================= */
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+.card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #f0f2f7;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e2a3a;
+    margin: 0;
+}
+
+.date-badge {
+    font-size: 11px;
+    color: #8492a6;
+    background: #f0f2f7;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-weight: 500;
+}
+
+/* =============================================
+   TABEL LOG
+   ============================================= */
+.card-log { display: flex; flex-direction: column; }
+
+.table-wrap {
+    overflow-x: auto;
+    padding: 0 4px 4px;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.log-table thead tr {
+    background: #f8f9fb;
+}
+
+.log-table th {
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #8492a6;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+
+.log-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f2f7;
+    color: #3d4a5c;
+    vertical-align: middle;
+}
+
+.log-table tbody tr:last-child td { border-bottom: none; }
+
+.log-table tbody tr:hover td { background: #fafbfc; }
+
+.id-col {
+    font-family: monospace;
+    font-size: 12px;
+    color: #8492a6;
+}
+
+/* Badge status */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+.badge-kembali  { background: #e6f4ea; color: #188038; }
+.badge-terlambat{ background: #fce8e6; color: #c5221f; }
+.badge-pinjam   { background: #fff3e0; color: #e65100; }
+
+/* Empty state */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    color: #c0cad8;
+    gap: 8px;
+}
+
+.empty-state i  { font-size: 36px; }
+.empty-state p  { font-size: 13px; margin: 0; }
+
+/* =============================================
+   KOLOM KANAN
+   ============================================= */
+.dash-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* =============================================
+   GRAFIK BAR
+   ============================================= */
+.card-chart { padding: 18px 20px 14px; }
+
+.chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 120px;
+    margin-top: 12px;
+}
+
+.chart-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+}
+
+.chart-bar-wrap {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.chart-bar {
+    width: 100%;
+    max-width: 32px;
+    background: linear-gradient(180deg, #4f7df9 0%, #2655e8 100%);
+    border-radius: 6px 6px 3px 3px;
+    position: relative;
+    min-height: 6px;
+    transition: opacity .2s;
+}
+
+.chart-bar:hover { opacity: .8; }
+
+.bar-val {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    color: #2655e8;
+    white-space: nowrap;
+}
+
+.bar-label {
+    font-size: 10px;
+    color: #8492a6;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* =============================================
+   ADMIN CARD
+   ============================================= */
+.card-admin {
+    background: linear-gradient(135deg, #002147 0%, #0050ad 100%);
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.admin-avatar {
+    font-size: 48px;
+    opacity: .9;
+    line-height: 1;
+}
+
+.admin-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.admin-name {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.admin-role {
+    font-size: 11px;
+    opacity: .7;
+}
+
+.admin-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,.2);
+    width: 100%;
+    justify-content: center;
+}
+
+.admin-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.admin-stat-val {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.admin-stat-lbl {
+    font-size: 10px;
+    opacity: .65;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1100px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .dash-main { grid-template-columns: 1fr; }
+    .dash-right { flex-direction: row; flex-wrap: wrap; }
+    .card-chart, .card-admin { flex: 1 1 260px; }
+}
+
+@media (max-width: 640px) {
+    .main-content { padding: 16px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-value { font-size: 24px; }
+}

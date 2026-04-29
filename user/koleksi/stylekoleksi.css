@@ -1,0 +1,1012 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0px;
+  height: 100%;
+}
+/* a blue color as a generic focus style */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+a {
+  text-decoration: none;
+}
+/* @FONTWARNING[{"type": "restricted", "family": "Inter-Bold", "weight": "700", "style": "normal", "allowsCrossOrigin": false}] */
+
+@font-face {
+  font-family: "Inter-Bold";
+  src: local("Inter-Bold");
+}
+/* @FONTWARNING[{"type": "restricted", "family": "Inter-Regular", "weight": "400", "style": "normal", "allowsCrossOrigin": false}] */
+
+@font-face {
+  font-family: "Inter-Regular";
+  src: local("Inter-Regular");
+}
+/* @FONTWARNING[{"type": "restricted", "family": "Inter-SemiBold", "weight": "600", "style": "normal", "allowsCrossOrigin": false}] */
+
+@font-face {
+  font-family: "Inter-SemiBold";
+  src: local("Inter-SemiBold");
+}
+/* @FONTWARNING[{"type": "restricted", "family": "Inter-Medium", "weight": "500", "style": "normal", "allowsCrossOrigin": false}] */
+
+@font-face {
+  font-family: "Inter-Medium";
+  src: local("Inter-Medium");
+}
+
+.koleksi {
+  background-color: #f5f7fb;
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 1440px;
+  min-height: 1903px;
+  position: relative;
+  padding-top: 72px;
+}
+
+/* Ensure navbar and footer remain clickable */
+.header-navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+  width: 100% !important;
+}
+
+.footer {
+  position: relative !important;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+}
+
+
+.koleksi .container-6 {
+  display: flex;
+  width: 14px;
+  height: 14px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.koleksi .vector-wrapper {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.koleksi .img {
+  position: absolute;
+  width: 66.67%;
+  height: 79.17%;
+  top: 20.83%;
+  left: 33.33%;
+}
+
+.koleksi .text-4 {
+  position: relative;
+  width: 55.17px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 21px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .text-wrapper-3 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 103px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  white-space: nowrap;
+}
+
+.koleksi .text-5 {
+  position: relative;
+  width: 58.06px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 21px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .text-wrapper-4 {
+  width: 70.47px;
+  height: 21px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 21px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: -1px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.koleksi .container-7 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.koleksi .div-3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.koleksi .container-8 {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.koleksi .text-6 {
+  position: relative;
+  width: 65.92px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 21px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .container-9 {
+  display: flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.koleksi .vector-2 {
+  position: absolute;
+  width: 75.00%;
+  height: 95.83%;
+  top: 4.17%;
+  left: 25.00%;
+}
+
+.koleksi .text-7 {
+  position: relative;
+  width: 65px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 21px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .text-8 {
+  position: relative;
+  width: 35.33px;
+  height: 21px;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 21px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .vector-3 {
+  position: absolute;
+  width: 79.17%;
+  height: 66.67%;
+  top: 33.33%;
+  left: 20.83%;
+}
+
+
+.koleksi .rectangle {
+  position: absolute;
+  top: 16px;
+  left: 1378px;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.koleksi .container-16 {
+  display: flex;
+  flex-direction: column;
+  max-width: 1360px;
+  width: 1360px;
+  align-items: flex-start;
+  padding: 0px 32px;
+  position: absolute;
+  top: 99px;
+  left: calc(50.00% - 680px);
+}
+
+.koleksi .container-17 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 0px 0px 24px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.koleksi .koleksi-perpustakaan {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  margin-top: -1px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: transparent;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.koleksi .span {
+  color: #0f172a;
+}
+
+.koleksi .text-wrapper-7 {
+  color: #0050ad;
+}
+
+.koleksi .background-border-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 736px 0px 0px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.koleksi .background-border {
+  display: flex;
+  min-width: 320px;
+  max-width: 560px;
+  height: 44px;
+  gap: 10px;
+  padding: 0px 14px;
+  flex: 1;
+  flex-grow: 1;
+  align-items: center;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid;
+  border-color: #00000014;
+}
+
+.koleksi .text-11 {
+  position: relative;
+  width: 113.36px;
+  height: 17px;
+  margin-top: -1px;
+  font-family: "Inter-Medium", Helvetica;
+  font-weight: 500;
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .text-12 {
+  position: relative;
+  width: 38.88px;
+  height: 17px;
+  margin-top: -1px;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 14px;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .background-border-2 {
+  display: inline-flex;
+  min-width: 108px;
+  height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 14px;
+  position: relative;
+  flex: 0 0 auto;
+  background-color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid;
+  border-color: #00000014;
+}
+
+.koleksi .text-13 {
+  position: relative;
+  width: 35.77px;
+  height: 17px;
+  margin-top: -1px;
+  font-family: "Inter-Medium", Helvetica;
+  font-weight: 500;
+  color: #334155;
+  font-size: 14px;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .text-wrapper-8 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 57px;
+  margin-top: -1px;
+  font-family: "Inter-Medium", Helvetica;
+  font-weight: 500;
+  color: #334155;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.koleksi .text-14 {
+  position: relative;
+  width: 41.34px;
+  height: 17px;
+  margin-top: -1px;
+  font-family: "Inter-Medium", Helvetica;
+  font-weight: 500;
+  color: #334155;
+  font-size: 14px;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .text-15 {
+  position: relative;
+  width: 42.56px;
+  height: 17px;
+  margin-top: -1px;
+  font-family: "Inter-Medium", Helvetica;
+  font-weight: 500;
+  color: #334155;
+  font-size: 14px;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .background-border-3 {
+  display: inline-flex;
+  height: 40px;
+  justify-content: center;
+  padding: 0px 18px;
+  flex: 0 0 auto;
+  align-items: center;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid;
+  border-color: #00000014;
+}
+
+.koleksi .text-16 {
+  position: relative;
+  justify-content: center;
+  width: 37.64px;
+  height: 17px;
+  font-family: "Inter-Medium", Helvetica;
+  font-weight: 500;
+  color: #0f172a;
+  font-size: 14px;
+  text-align: center;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .container-18 {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: 1285.98px;
+}
+
+.koleksi .card {
+  gap: 5.68e-14px;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .background {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: #f3f4f6;
+}
+
+.koleksi .atomic-habits {
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  height: 285.33px;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/atomic-habits.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .container-19 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.koleksi .text-wrapper-9 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  margin-top: -1px;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-weight: 600;
+  color: #111827;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.koleksi .text-wrapper-10 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  margin-top: -1px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #6b7280;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.koleksi .card-2 {
+  gap: 5.68e-14px;
+  top: 0;
+  left: 264px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .background-2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: #f3f4f6;
+  aspect-ratio: 0.75;
+}
+
+.koleksi .bumi-manusia {
+  flex: 1;
+  flex-grow: 1;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/bumi-manusia-3.png);
+  background-size: cover;
+  background-position: 50% 50%;
+  position: relative;
+  align-self: stretch;
+}
+
+.koleksi .card-3 {
+  gap: 5.68e-14px;
+  top: 0;
+  left: 528px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .laskar-pelangi {
+  flex: 1;
+  flex-grow: 1;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/laskar-pelangi-2.png);
+  background-size: cover;
+  background-position: 50% 50%;
+  position: relative;
+  align-self: stretch;
+}
+
+.koleksi .card-4 {
+  gap: 5.68e-14px;
+  top: 0;
+  left: 792px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .cover {
+  flex: 1;
+  flex-grow: 1;
+  position: relative;
+  height: 274.98px;
+  background-image: url(./img/cover-4.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-5 {
+  gap: 5.68e-14px;
+  top: 0;
+  left: 1056px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .background-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  background-color: #f1f5f9;
+  aspect-ratio: 0.67;
+}
+
+.koleksi .cover-2 {
+  align-self: stretch;
+  width: 100%;
+  position: relative;
+  height: 274.98px;
+  background-image: url(./img/image.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .background-4 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 4px 8px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #10b981;
+  border-radius: 4px;
+}
+
+.koleksi .text-17 {
+  position: relative;
+  width: 27.97px;
+  height: 15px;
+  margin-top: -1px;
+  font-family: "Inter-Bold", Helvetica;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 10px;
+  line-height: 15px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+.koleksi .card-6 {
+  gap: 5.68e-14px;
+  top: 415px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .atomic-habits-2 {
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  height: 285.33px;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/atomic-habits-3.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-7 {
+  gap: 5.68e-14px;
+  top: 415px;
+  left: 264px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .bumi-manusia-2 {
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  height: 285.33px;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/bumi-manusia.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-8 {
+  gap: 5.68e-14px;
+  top: 415px;
+  left: 528px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .laskar-pelangi-2 {
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  height: 285.33px;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/laskar-pelangi.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-9 {
+  gap: 5.68e-14px;
+  top: 415px;
+  left: 792px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .cover-3 {
+  flex: 1;
+  flex-grow: 1;
+  position: relative;
+  height: 274.98px;
+  background-image: url(./img/cover-5.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-10 {
+  gap: 5.68e-14px;
+  top: 415px;
+  left: 1056px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .cover-4 {
+  flex: 1;
+  flex-grow: 1;
+  position: relative;
+  height: 274.98px;
+  background-image: url(./img/cover.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-11 {
+  top: 831px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .atomic-habits-3 {
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  height: 285.33px;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/atomic-habits-2.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .container-20 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  margin-top: -0.01px;
+}
+
+.koleksi .card-12 {
+  top: 831px;
+  left: 264px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .bumi-manusia-3 {
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  height: 285.33px;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/bumi-manusia-2.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-13 {
+  gap: 5.68e-14px;
+  top: 831px;
+  left: 528px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .laskar-pelangi-3 {
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  height: 285.33px;
+  box-shadow: 0px 4px 6px -1px #0000001a;
+  background-image: url(./img/laskar-pelangi-3.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-14 {
+  gap: 5.68e-14px;
+  top: 842px;
+  left: 796px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .cover-5 {
+  flex: 1;
+  flex-grow: 1;
+  position: relative;
+  height: 274.98px;
+  background-image: url(./img/cover-3.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.koleksi .card-15 {
+  gap: 5.68e-14px;
+  top: 841px;
+  left: 1056px;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 1056px);
+  align-items: flex-start;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid;
+  border-color: #f3f4f6;
+  box-shadow: 0px 1px 3px #0000001a;
+}
+
+.koleksi .cover-6 {
+  flex: 1;
+  flex-grow: 1;
+  position: relative;
+  height: 274.98px;
+  background-image: url(./img/cover-2.png);
+  background-size: cover;
+  background-position: 50% 50%;
+}
