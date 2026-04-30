@@ -47,8 +47,8 @@
                             <td><?= $row['kategori'] ?></td>
                             <td><?= $row['stok'] ?></td>
                             <td>
-                                <button onclick="edit(<?= $row['id'] ?>)">Edit</button>
-                                <button onclick="detail(<?= $row['id'] ?>)">Detail</button>
+                                <button class="btn-edit" onclick="edit(<?= $row['id'] ?>)">Edit</button>
+                                <button class="btn-detail" onclick="detail(<?= $row['id'] ?>)">Detail</button>
                             </td>
                         </tr>
                         <?php endwhile; ?>
