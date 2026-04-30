@@ -15,6 +15,7 @@
         <div style="height:0.5rem;"></div>
 
         <a href="?menu=peminjaman" class="sidebar-subitem <?= ($currentMenu === 'peminjaman') ? 'active' : ''; ?>">
+
             <i class="bi bi-check-circle "></i> PEMINJAMAN
         </a>
 

@@ -4,11 +4,11 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta charset="utf-8" />
- <link rel="stylesheet" href="/workshop-perpus/user/style.css?v=1">
-<link rel="stylesheet" href="styletertib.css">
+ <link rel="stylesheet" href="../public/css/style.css?v=1">
+<link rel="stylesheet" href="../public/css/styletertib.css">
 </head>
 <body>
-<?php include '../navbar.php'; ?>
+<?php include 'navbar.php'; ?>
 <div class="panduan-tata-tertib" ><div class="main" ><div class="hero-section" ><div class="container" ><div class="overlay-border-wrapper" ><div class="overlay-border" ><img class="Checklist" src="../gambar/Checklist.png" /></div></div>
 <div class="heading" ><div class="text-wrapper" >Tata Tertib</div></div>
 <div class="div-wrapper" ><div class="text" >Perpustakaan POLIJE</div></div></div></div></div>
@@ -57,6 +57,6 @@
 <div class="container-19" ><div class="background-border" ><div class="overlay-shadow" ></div>
 <div class="text-16" >2</div></div>
 <div class="container-26" ><p class="text-36" >Anggota/pengunjung perpustakaan yang terlambat mengembalikan buku-buku (sirkulasi) peminjaman<br/>akan di kenakan denda sebesar 500 per hari per buku.</p></div></div></div></div></div></div>
-<?php include '../foot.php'; ?>
+<?php include 'foot.php'; ?>
 </body>
 </html>

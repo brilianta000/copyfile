@@ -19,10 +19,16 @@ $allowedMenus = [
             '../public/css/laporantransaksi.css',
         ],
     ],
+    // 'tambahbuku' => [
+    //     'file' => 'pages/databuku.php',
+    //     'styles' => [
+    //         '../public/css/databuku.css'
+    //     ]
+    // ],
     'tambahbuku' => [
-        'file' => 'pages/tambah.php',
+        'file' => 'pages/databuku.php',
         'styles' => [
-            '../public/css/tambah.css'
+            '../public/css/databuku.css'
         ]
     ],
     'dashboard' => [

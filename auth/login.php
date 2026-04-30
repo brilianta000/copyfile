@@ -210,8 +210,8 @@ body {
             <form action="proses-login.php" method="POST" class="login-form">
 
                 <div class="input-group">
-                    <label for="email">Email atau ID Anggota</label>
-                    <input type="text" id="email" name="email" placeholder="Masukkan email / ID" required>
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" placeholder="Masukkan email" required>
                 </div>
 
                 <div class="input-group">
@@ -223,7 +223,7 @@ body {
                     <a href="#">Lupa kata sandi?</a>
                 </div>
 
-                <button type="submit" class="btn-login">Masuk</button>
+                <button type="submit" name="login" class="btn-login">Masuk</button>
 
             </form>
 
