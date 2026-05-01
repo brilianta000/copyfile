@@ -3,13 +3,14 @@
 class Database {
     private $host = 'localhost';
     private $user = 'root';
-    private $password = '';
+    private $password = '1deA050806';
     private $db = 'db_perpustakaan';
 
     public $conn;
 
     public function __construct() {
         $this->conn = null;
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
         try {
             $this->conn = new mysqli(
@@ -25,9 +26,10 @@ class Database {
         } catch (Exception $e) {
             die($e->getMessage());
         }
+        echo 'sukses';
     }
 
-    public function getconnection() {
+    public function getConnection() {
         return $this->conn;
     }
 }

@@ -1,8 +1,13 @@
 <?php
+
+require_once '../config/database.php';
 // Inisialisasi session admin bila belum aktif.
 if (session_status() === PHP_SESSION_NONE) {
     @session_start();
 }
+
+$db = new Database();
+$conn = $db->getConnection();
 
 $menu = $_GET['menu'] ?? 'akun';
 
