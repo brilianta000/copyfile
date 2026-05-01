@@ -18,7 +18,7 @@ $allowedMenus = [
         'styles' => ['../public/css/akun.css'],
     ],
     'peminjaman' => [
-        'file' => 'pages/datapeminjam.php',
+        'file' => 'pages/datapeminjaman.php',
         'styles' => [
             '../public/css/datapeminjam.css',
             '../public/css/popuppeminjaman.css',

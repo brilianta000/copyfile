@@ -7,7 +7,7 @@
         </div>
 
         <!-- Form create peminjaman, diproses oleh halaman peminjaman -->
-        <form method="post">
+        <form method="post" action="actions/peminjaman/store.php">
             <div class="popup-body">
                 <?php if (!empty($errors)): ?>
                     <div class="popup-alert">
