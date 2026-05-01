@@ -5,7 +5,7 @@
 |--------------------------------------------------------------------------
 */
 $dataFile = __DIR__ . '/data_peminjaman.json';
-$laporanFile = __DIR__ . '/../laporantransaksi/data_laporan_transaksi.json';
+$laporanFile = __DIR__ . '/data_laporan_transaksi.json';
 
 $openPopup = false;
 $errors = [];
@@ -22,31 +22,37 @@ $oldInput = [
 | HELPER UMUM
 |--------------------------------------------------------------------------
 */
+// Escape output agar aman ditampilkan ke HTML.
 function e($value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
+// Membuat ID unik untuk transaksi peminjaman.
 function createId(): string
 {
     return uniqid('pjm_', true);
 }
 
+// Mengambil tanggal hari ini dalam format Y-m-d.
 function todayDate(): string
 {
     return date('Y-m-d');
 }
 
+// Menentukan tanggal kembali default tujuh hari setelah peminjaman.
 function defaultTanggalKembali(): string
 {
     return date('Y-m-d', strtotime('+7 days'));
 }
 
+// Mengambil nama menu aktif untuk URL peminjaman.
 function getCurrentMenuPeminjaman(): string
 {
     return $_GET['menu'] ?? 'peminjaman';
 }
 
+// Mengarahkan ulang halaman peminjaman dengan query tertentu.
 function redirectTo(array $params = []): void
 {
     $url = basename($_SERVER['PHP_SELF']);
@@ -60,6 +66,7 @@ function redirectTo(array $params = []): void
     exit;
 }
 
+// Memformat tanggal untuk tampilan tabel.
 function formatTanggal($date): string
 {
     if (empty($date)) {
@@ -76,6 +83,7 @@ function formatTanggal($date): string
 |--------------------------------------------------------------------------
 | Dipakai hanya saat file JSON belum ada atau rusak.
 */
+// Menyediakan data peminjaman awal ketika JSON belum tersedia.
 function seedPeminjaman(): array
 {
     $today = new DateTimeImmutable('today');
@@ -155,6 +163,7 @@ function seedPeminjaman(): array
 | SIMPAN DAN LOAD DATA JSON
 |--------------------------------------------------------------------------
 */
+// Memastikan folder penyimpanan JSON sudah ada.
 function ensureDirectoryExists(string $file): void
 {
     $dir = dirname($file);
@@ -164,6 +173,7 @@ function ensureDirectoryExists(string $file): void
     }
 }
 
+// Membaca file JSON dan memastikan hasilnya array.
 function readJsonArray(string $file, array $fallback = []): array
 {
     if (!file_exists($file)) {
@@ -176,6 +186,7 @@ function readJsonArray(string $file, array $fallback = []): array
     return is_array($data) ? $data : $fallback;
 }
 
+// Menulis array ke file JSON dengan format rapi.
 function writeJsonArray(string $file, array $data): void
 {
     ensureDirectoryExists($file);
@@ -187,6 +198,7 @@ function writeJsonArray(string $file, array $data): void
     );
 }
 
+// Membaca data peminjaman aktif dari JSON.
 function loadPeminjaman(string $file): array
 {
     if (!file_exists($file)) {
@@ -206,16 +218,19 @@ function loadPeminjaman(string $file): array
     return $data;
 }
 
+// Menyimpan data peminjaman ke JSON.
 function savePeminjaman(string $file, array $data): void
 {
     writeJsonArray($file, $data);
 }
 
+// Membaca data laporan transaksi dari JSON.
 function loadLaporanTransaksi(string $file): array
 {
     return readJsonArray($file);
 }
 
+// Menyimpan data laporan transaksi ke JSON.
 function saveLaporanTransaksi(string $file, array $data): void
 {
     writeJsonArray($file, $data);
@@ -226,41 +241,62 @@ function saveLaporanTransaksi(string $file, array $data): void
 | DAFTAR BUKU DAN STOK
 |--------------------------------------------------------------------------
 */
+// Mengambil daftar judul buku dan stok dari Data Buku.
 function getDaftarBuku(): array
 {
-    return [
-        'Algoritma' => 5,
-        'Basis Data' => 5,
-        'Jaringan' => 5,
-        'AI' => 5,
-        'Web Dev' => 5,
-        'Python' => 5,
-        'UI/UX' => 5,
-        'Pemrograman Web' => 5,
-        'Jaringan Komputer' => 5,
-        'Sistem Informasi' => 5,
-        'Pemrograman Java' => 5,
-        'Teknik Elektro' => 5,
-        'Manajemen Keuangan' => 5,
-    ];
+    $dataBukuFile = __DIR__ . '/data_buku.json';
+    $dataBuku = readJsonArray($dataBukuFile);
+    $daftarBuku = [];
+
+    foreach ($dataBuku as $item) {
+        $judul = trim((string) ($item['judul'] ?? ''));
+
+        if ($judul === '') {
+            continue;
+        }
+
+        $daftarBuku[$judul] = max(0, (int) ($item['stok'] ?? 0));
+    }
+
+    return $daftarBuku;
 }
 
+// Memastikan buku yang dipilih ada di Data Buku.
 function isBukuValid(string $buku): bool
 {
     return array_key_exists($buku, getDaftarBuku());
 }
 
+// Mengambil stok total buku berdasarkan judul.
 function getStokBuku(string $buku): int
 {
     $daftarBuku = getDaftarBuku();
     return $daftarBuku[$buku] ?? 0;
 }
 
+// Mengecek apakah transaksi peminjaman masih aktif.
 function isPinjamanAktif(array $item): bool
 {
     return empty($item['returned_at']);
 }
 
+// Mengecek apakah transaksi peminjaman masih bisa diperpanjang.
+function canPerpanjangPeminjaman(array $item): bool
+{
+    return isPinjamanAktif($item) && empty($item['extended_at']);
+}
+
+// Menambahkan tujuh hari ke tanggal jatuh tempo peminjaman.
+function tambahTujuhHariPeminjaman(string $tanggal): string
+{
+    try {
+        return (new DateTimeImmutable($tanggal))->modify('+7 days')->format('Y-m-d');
+    } catch (Exception $e) {
+        return date('Y-m-d', strtotime('+7 days'));
+    }
+}
+
+// Menghitung pinjaman aktif berdasarkan NIM.
 function countPinjamanAktifByNim(array $data, string $nim): int
 {
     $total = 0;
@@ -275,6 +311,7 @@ function countPinjamanAktifByNim(array $data, string $nim): int
     return $total;
 }
 
+// Menghitung pinjaman aktif berdasarkan judul buku.
 function countPinjamanAktifByBuku(array $data, string $buku): int
 {
     $total = 0;
@@ -289,6 +326,7 @@ function countPinjamanAktifByBuku(array $data, string $buku): int
     return $total;
 }
 
+// Menghitung sisa stok buku setelah dikurangi pinjaman aktif.
 function getSisaStokBuku(array $data, string $buku): int
 {
     if (!isBukuValid($buku)) {
@@ -298,6 +336,7 @@ function getSisaStokBuku(array $data, string $buku): int
     return max(0, getStokBuku($buku) - countPinjamanAktifByBuku($data, $buku));
 }
 
+// Membuat daftar opsi buku untuk popup peminjaman.
 function getOpsiBuku(array $dataPeminjaman): array
 {
     $opsi = [];
@@ -318,6 +357,7 @@ function getOpsiBuku(array $dataPeminjaman): array
 | LAPORAN TRANSAKSI
 |--------------------------------------------------------------------------
 */
+// Membuat ID berikutnya untuk data laporan.
 function nextLaporanId(array $data): int
 {
     $max = 0;
@@ -329,6 +369,7 @@ function nextLaporanId(array $data): int
     return $max + 1;
 }
 
+// Menentukan status laporan berdasarkan jatuh tempo dan tanggal kembali.
 function buildStatusLaporan(string $jatuhTempo, string $tglKembali = ''): string
 {
     if ($tglKembali !== '') {
@@ -338,6 +379,7 @@ function buildStatusLaporan(string $jatuhTempo, string $tglKembali = ''): string
     return strtotime(todayDate()) > strtotime($jatuhTempo) ? 'Terlambat' : 'Belum Kembali';
 }
 
+// Mencari indeks laporan berdasarkan ID sumber peminjaman.
 function cariIndexLaporanBySourceId(array $laporanData, string $sourceId): ?int
 {
     foreach ($laporanData as $index => $item) {
@@ -349,6 +391,7 @@ function cariIndexLaporanBySourceId(array $laporanData, string $sourceId): ?int
     return null;
 }
 
+// Membentuk data laporan dari data peminjaman.
 function buatItemLaporanDariPeminjaman(array $item, ?int $laporanId = null): array
 {
     $tglKembaliReal = !empty($item['returned_at']) ? $item['returned_at'] : '';
@@ -366,6 +409,7 @@ function buatItemLaporanDariPeminjaman(array $item, ?int $laporanId = null): arr
     ];
 }
 
+// Menyinkronkan data peminjaman ke laporan transaksi.
 function sinkronkanPeminjamanKeLaporan(array $dataPeminjaman, array $laporanData): array
 {
     $changed = false;
@@ -401,6 +445,7 @@ function sinkronkanPeminjamanKeLaporan(array $dataPeminjaman, array $laporanData
 | STATUS, KETERLAMBATAN, DAN DENDA
 |--------------------------------------------------------------------------
 */
+// Menghitung status, keterlambatan, dan denda peminjaman.
 function hitungMetaPeminjaman(array $item): array
 {
     try {
@@ -442,11 +487,26 @@ function hitungMetaPeminjaman(array $item): array
 | PAGINATION
 |--------------------------------------------------------------------------
 */
-function buildPageUrl(int $page, string $search): string
+// Menyediakan opsi jumlah data peminjaman per halaman.
+function getPeminjamanPerPageOptions(): array
+{
+    return [5, 7, 10, 15, 20];
+}
+
+// Memvalidasi jumlah data peminjaman per halaman.
+function normalizePeminjamanPerPage($value, int $default = 7): int
+{
+    $value = (int) $value;
+    return in_array($value, getPeminjamanPerPageOptions(), true) ? $value : $default;
+}
+
+// Membuat URL pagination peminjaman.
+function buildPageUrl(int $page, string $search, int $perPage): string
 {
     $params = [
         'menu' => getCurrentMenuPeminjaman(),
         'page' => $page,
+        'per_page' => $perPage,
     ];
 
     if ($search !== '') {
@@ -456,6 +516,7 @@ function buildPageUrl(int $page, string $search): string
     return '?' . http_build_query($params);
 }
 
+// Membuat daftar item pagination dengan titik pemisah.
 function getPaginationItems(int $currentPage, int $totalPages): array
 {
     $items = [];
@@ -507,6 +568,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ($requestMethod === 'POST') {
     $action = $_POST['action'] ?? '';
 
+    // Proses tambah peminjaman dari popup.
     if ($action === 'add_peminjaman') {
         $nim = trim($_POST['nim'] ?? '');
         $nama = trim($_POST['nama'] ?? '');
@@ -559,16 +621,68 @@ if ($requestMethod === 'POST') {
             );
             saveLaporanTransaksi($laporanFile, $laporanTransaksi);
 
-            redirectTo();
+            redirectTo(['per_page' => normalizePeminjamanPerPage($_POST['per_page'] ?? 7)]);
         }
 
         $openPopup = true;
     }
 
+    // Proses perpanjangan peminjaman satu kali per ID transaksi dan sinkronisasi laporan.
+    if ($action === 'perpanjang_peminjaman') {
+        $id = $_POST['id'] ?? '';
+        $searchFromPost = trim($_POST['q'] ?? '');
+        $pageFromPost = max(1, (int) ($_POST['page'] ?? 1));
+        $perPageFromPost = normalizePeminjamanPerPage($_POST['per_page'] ?? 7);
+        $laporanTransaksi = loadLaporanTransaksi($laporanFile);
+        $dataBerubah = false;
+
+        foreach ($dataPeminjaman as $index => $item) {
+            if (($item['id'] ?? '') !== $id || !canPerpanjangPeminjaman($item)) {
+                continue;
+            }
+
+            $item['tanggal_kembali'] = tambahTujuhHariPeminjaman((string) ($item['tanggal_kembali'] ?? todayDate()));
+            $item['extended_at'] = todayDate();
+            $dataPeminjaman[$index] = $item;
+
+            $laporanIndex = cariIndexLaporanBySourceId($laporanTransaksi, $item['id']);
+            $laporanItem = buatItemLaporanDariPeminjaman(
+                $item,
+                $laporanIndex !== null
+                    ? ($laporanTransaksi[$laporanIndex]['id'] ?? nextLaporanId($laporanTransaksi))
+                    : nextLaporanId($laporanTransaksi)
+            );
+
+            if ($laporanIndex === null) {
+                array_unshift($laporanTransaksi, $laporanItem);
+            } else {
+                $laporanTransaksi[$laporanIndex] = $laporanItem;
+            }
+
+            $dataBerubah = true;
+            break;
+        }
+
+        if ($dataBerubah) {
+            savePeminjaman($dataFile, array_values($dataPeminjaman));
+            saveLaporanTransaksi($laporanFile, $laporanTransaksi);
+        }
+
+        $redirectParams = ['menu' => 'peminjaman', 'page' => $pageFromPost, 'per_page' => $perPageFromPost];
+
+        if ($searchFromPost !== '') {
+            $redirectParams['q'] = $searchFromPost;
+        }
+
+        redirectTo($redirectParams);
+    }
+
+    // Proses pengembalian buku dan sinkronisasi ke laporan.
     if ($action === 'kembalikan_peminjaman') {
         $id = $_POST['id'] ?? '';
         $searchFromPost = trim($_POST['q'] ?? '');
         $pageFromPost = max(1, (int) ($_POST['page'] ?? 1));
+        $perPageFromPost = normalizePeminjamanPerPage($_POST['per_page'] ?? 7);
         $laporanTransaksi = loadLaporanTransaksi($laporanFile);
         $dataBerubah = false;
 
@@ -602,7 +716,7 @@ if ($requestMethod === 'POST') {
             saveLaporanTransaksi($laporanFile, $laporanTransaksi);
         }
 
-        $redirectParams = ['menu' => 'peminjaman', 'page' => $pageFromPost];
+        $redirectParams = ['menu' => 'peminjaman', 'page' => $pageFromPost, 'per_page' => $perPageFromPost];
 
         if ($searchFromPost !== '') {
             $redirectParams['q'] = $searchFromPost;
@@ -618,6 +732,7 @@ if ($requestMethod === 'POST') {
 |--------------------------------------------------------------------------
 */
 $search = trim($_GET['q'] ?? '');
+$perPage = normalizePeminjamanPerPage($_GET['per_page'] ?? 7);
 $filteredData = array_values(array_filter($dataPeminjaman, function (array $item) use ($search): bool {
     if ($search === '') {
         return true;
@@ -628,7 +743,6 @@ $filteredData = array_values(array_filter($dataPeminjaman, function (array $item
         || stripos((string) ($item['buku'] ?? ''), $search) !== false;
 }));
 
-$perPage = 7;
 $totalData = count($filteredData);
 $totalPages = max(1, (int) ceil($totalData / $perPage));
 $currentPage = min(max(1, (int) ($_GET['page'] ?? 1)), $totalPages);
@@ -639,18 +753,8 @@ $endDisplay = $totalData > 0 ? min($offset + $perPage, $totalData) : 0;
 $paginationItems = getPaginationItems($currentPage, $totalPages);
 $opsiBuku = getOpsiBuku($dataPeminjaman);
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Peminjam</title>
-    <link rel="stylesheet" href="datapeminjam/datapeminjam.css">
-    <link rel="stylesheet" href="datapeminjam/popuppeminjaman.css">
-</head>
-<body>
-<div class="main-content">
-    <div class="datapeminjam-wrapper">
+<!-- Tampilan utama menu Peminjaman -->
+<div class="datapeminjam-wrapper">
         <div class="datapeminjam-header">
             <div class="title-group">
                 <h1>Data Peminjam</h1>
@@ -666,13 +770,11 @@ $opsiBuku = getOpsiBuku($dataPeminjaman);
 
                 <form method="get" class="search-form">
                     <input type="hidden" name="menu" value="<?= e(getCurrentMenuPeminjaman()); ?>">
+                    <input type="hidden" name="per_page" value="<?= (int) $perPage; ?>">
                     <div class="search-box">
                         <input type="text" name="q" placeholder="Cari Peminjaman..." value="<?= e($search); ?>">
                         <button type="submit" class="search-submit" aria-label="Cari">
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"></circle>
-                                <path d="M16 16L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                            </svg>
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </form>
@@ -700,6 +802,8 @@ $opsiBuku = getOpsiBuku($dataPeminjaman);
                         <?php
                         $meta = hitungMetaPeminjaman($item);
                         $statusClass = 'status-dipinjam';
+                        $tanggalKembaliLama = (string) ($item['tanggal_kembali'] ?? '');
+                        $tanggalKembaliBaru = tambahTujuhHariPeminjaman($tanggalKembaliLama);
 
                         if ($meta['status'] === 'Dikembalikan') {
                             $statusClass = 'status-dikembalikan';
@@ -720,15 +824,33 @@ $opsiBuku = getOpsiBuku($dataPeminjaman);
                             </td>
                             <td>
                                 <?php if (empty($item['returned_at'])): ?>
-                                    <button
-                                        type="button"
-                                        class="btn-kembalikan js-open-return-modal"
-                                        data-id="<?= e($item['id'] ?? ''); ?>"
-                                        data-nama="<?= e($item['nama'] ?? ''); ?>"
-                                        data-buku="<?= e($item['buku'] ?? ''); ?>"
-                                    >
-                                        Kembalikan
-                                    </button>
+                                    <div class="peminjaman-action-group">
+                                        <?php if (canPerpanjangPeminjaman($item)): ?>
+                                            <button
+                                                type="button"
+                                                class="btn-perpanjang js-open-extend-modal"
+                                                data-id="<?= e($item['id'] ?? ''); ?>"
+                                                data-nama="<?= e($item['nama'] ?? ''); ?>"
+                                                data-buku="<?= e($item['buku'] ?? ''); ?>"
+                                                data-tanggal-lama="<?= e(formatTanggal($tanggalKembaliLama)); ?>"
+                                                data-tanggal-baru="<?= e(formatTanggal($tanggalKembaliBaru)); ?>"
+                                            >
+                                                Perpanjang
+                                            </button>
+                                        <?php else: ?>
+                                            <span class="extend-used-label">Sudah Diperpanjang</span>
+                                        <?php endif; ?>
+
+                                        <button
+                                            type="button"
+                                            class="btn-kembalikan js-open-return-modal"
+                                            data-id="<?= e($item['id'] ?? ''); ?>"
+                                            data-nama="<?= e($item['nama'] ?? ''); ?>"
+                                            data-buku="<?= e($item['buku'] ?? ''); ?>"
+                                        >
+                                            Kembalikan
+                                        </button>
+                                    </div>
                                 <?php else: ?>
                                     <span class="empty-action">-</span>
                                 <?php endif; ?>
@@ -764,6 +886,7 @@ $opsiBuku = getOpsiBuku($dataPeminjaman);
                             <input type="hidden" name="id" id="returnConfirmId">
                             <input type="hidden" name="q" value="<?= e($search); ?>">
                             <input type="hidden" name="page" value="<?= (int) $currentPage; ?>">
+                            <input type="hidden" name="per_page" value="<?= (int) $perPage; ?>">
                         </div>
 
                         <div class="return-confirm-actions">
@@ -773,16 +896,64 @@ $opsiBuku = getOpsiBuku($dataPeminjaman);
                     </form>
                 </div>
             </div>
+
+            <div class="return-confirm-overlay" id="extendConfirmOverlay">
+                <div class="return-confirm-box">
+                    <div class="return-confirm-header">
+                        <h3>Konfirmasi Perpanjangan</h3>
+                        <button type="button" class="return-confirm-close" id="extendConfirmClose" aria-label="Tutup">
+                            &times;
+                        </button>
+                    </div>
+
+                    <form method="post" class="return-confirm-form">
+                        <div class="return-confirm-body">
+                            <p class="return-confirm-text">Yakin ingin memperpanjang peminjaman ini selama 7 hari?</p>
+                            <div class="return-confirm-detail">
+                                <div><strong>Nama:</strong> <span id="extendConfirmNama">-</span></div>
+                                <div><strong>Buku:</strong> <span id="extendConfirmBuku">-</span></div>
+                                <div><strong>Jatuh Tempo Lama:</strong> <span id="extendConfirmTanggalLama">-</span></div>
+                                <div><strong>Jatuh Tempo Baru:</strong> <span id="extendConfirmTanggalBaru">-</span></div>
+                            </div>
+
+                            <input type="hidden" name="action" value="perpanjang_peminjaman">
+                            <input type="hidden" name="id" id="extendConfirmId">
+                            <input type="hidden" name="q" value="<?= e($search); ?>">
+                            <input type="hidden" name="page" value="<?= (int) $currentPage; ?>">
+                            <input type="hidden" name="per_page" value="<?= (int) $perPage; ?>">
+                        </div>
+
+                        <div class="return-confirm-actions">
+                            <button type="button" class="btn-return-batal" id="extendConfirmCancel">Batal</button>
+                            <button type="submit" class="btn-return-submit">Perpanjang</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div class="datapeminjam-footer">
             <div class="data-count">
                 Menampilkan <?= (int) $startDisplay; ?>-<?= (int) $endDisplay; ?> dari <?= (int) $totalData; ?> data
+                <form method="get" class="per-page-form">
+                    <input type="hidden" name="menu" value="<?= e(getCurrentMenuPeminjaman()); ?>">
+                    <input type="hidden" name="page" value="1">
+                    <input type="hidden" name="q" value="<?= e($search); ?>">
+                    <label>
+                        <span>Tampilkan</span>
+                        <select name="per_page" onchange="this.form.submit()">
+                            <?php foreach (getPeminjamanPerPageOptions() as $option): ?>
+                                <option value="<?= (int) $option; ?>" <?= $perPage === $option ? 'selected' : ''; ?>><?= (int) $option; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <span>data</span>
+                    </label>
+                </form>
             </div>
 
             <div class="pagination">
                 <?php if ($currentPage > 1): ?>
-                    <a href="<?= e(buildPageUrl($currentPage - 1, $search)); ?>" class="page-btn">&laquo;</a>
+                    <a href="<?= e(buildPageUrl($currentPage - 1, $search, $perPage)); ?>" class="page-btn">&laquo;</a>
                 <?php else: ?>
                     <span class="page-btn disabled">&laquo;</span>
                 <?php endif; ?>
@@ -793,22 +964,22 @@ $opsiBuku = getOpsiBuku($dataPeminjaman);
                     <?php elseif ((int) $pageItem === $currentPage): ?>
                         <span class="page-btn active"><?= (int) $pageItem; ?></span>
                     <?php else: ?>
-                        <a href="<?= e(buildPageUrl((int) $pageItem, $search)); ?>" class="page-btn"><?= (int) $pageItem; ?></a>
+                        <a href="<?= e(buildPageUrl((int) $pageItem, $search, $perPage)); ?>" class="page-btn"><?= (int) $pageItem; ?></a>
                     <?php endif; ?>
                 <?php endforeach; ?>
 
                 <?php if ($currentPage < $totalPages): ?>
-                    <a href="<?= e(buildPageUrl($currentPage + 1, $search)); ?>" class="page-btn">&raquo;</a>
+                    <a href="<?= e(buildPageUrl($currentPage + 1, $search, $perPage)); ?>" class="page-btn">&raquo;</a>
                 <?php else: ?>
                     <span class="page-btn disabled">&raquo;</span>
                 <?php endif; ?>
             </div>
         </div>
-    </div>
 </div>
 
 <?php include __DIR__ . '/../popuppeminjaman.php'; ?>
 
+<!-- Script popup tambah peminjaman, konfirmasi perpanjangan, dan konfirmasi pengembalian -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const returnOverlay = document.getElementById('returnConfirmOverlay');
@@ -818,7 +989,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const returnNamaText = document.getElementById('returnConfirmNama');
     const returnBukuText = document.getElementById('returnConfirmBuku');
     const returnButtons = document.querySelectorAll('.js-open-return-modal');
+    const extendOverlay = document.getElementById('extendConfirmOverlay');
+    const extendCloseBtn = document.getElementById('extendConfirmClose');
+    const extendCancelBtn = document.getElementById('extendConfirmCancel');
+    const extendIdInput = document.getElementById('extendConfirmId');
+    const extendNamaText = document.getElementById('extendConfirmNama');
+    const extendBukuText = document.getElementById('extendConfirmBuku');
+    const extendTanggalLamaText = document.getElementById('extendConfirmTanggalLama');
+    const extendTanggalBaruText = document.getElementById('extendConfirmTanggalBaru');
+    const extendButtons = document.querySelectorAll('.js-open-extend-modal');
 
+    // Membuka popup konfirmasi pengembalian buku.
     function openReturnModal(id, nama, buku) {
         if (!returnOverlay) {
             return;
@@ -831,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.add('modal-open');
     }
 
+    // Menutup popup konfirmasi pengembalian buku.
     function closeReturnModal() {
         if (!returnOverlay) {
             return;
@@ -840,9 +1022,46 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.remove('modal-open');
     }
 
+    // Membuka popup konfirmasi perpanjangan buku.
+    function openExtendModal(id, nama, buku, tanggalLama, tanggalBaru) {
+        if (!extendOverlay) {
+            return;
+        }
+
+        extendIdInput.value = id || '';
+        extendNamaText.textContent = nama || '-';
+        extendBukuText.textContent = buku || '-';
+        extendTanggalLamaText.textContent = tanggalLama || '-';
+        extendTanggalBaruText.textContent = tanggalBaru || '-';
+        extendOverlay.classList.add('show');
+        document.body.classList.add('modal-open');
+    }
+
+    // Menutup popup konfirmasi perpanjangan buku.
+    function closeExtendModal() {
+        if (!extendOverlay) {
+            return;
+        }
+
+        extendOverlay.classList.remove('show');
+        document.body.classList.remove('modal-open');
+    }
+
     returnButtons.forEach(function (button) {
         button.addEventListener('click', function () {
             openReturnModal(this.dataset.id, this.dataset.nama, this.dataset.buku);
+        });
+    });
+
+    extendButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            openExtendModal(
+                this.dataset.id,
+                this.dataset.nama,
+                this.dataset.buku,
+                this.dataset.tanggalLama,
+                this.dataset.tanggalBaru
+            );
         });
     });
 
@@ -854,6 +1073,14 @@ document.addEventListener('DOMContentLoaded', function () {
         returnCancelBtn.addEventListener('click', closeReturnModal);
     }
 
+    if (extendCloseBtn) {
+        extendCloseBtn.addEventListener('click', closeExtendModal);
+    }
+
+    if (extendCancelBtn) {
+        extendCancelBtn.addEventListener('click', closeExtendModal);
+    }
+
     if (returnOverlay) {
         returnOverlay.addEventListener('click', function (event) {
             if (event.target === returnOverlay) {
@@ -862,9 +1089,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    if (extendOverlay) {
+        extendOverlay.addEventListener('click', function (event) {
+            if (event.target === extendOverlay) {
+                closeExtendModal();
+            }
+        });
+    }
+
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape' && returnOverlay && returnOverlay.classList.contains('show')) {
             closeReturnModal();
+        }
+
+        if (event.key === 'Escape' && extendOverlay && extendOverlay.classList.contains('show')) {
+            closeExtendModal();
         }
     });
 
@@ -873,6 +1112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const closePopupPeminjaman = document.getElementById('closePopupPeminjaman');
     const batalPopupPeminjaman = document.getElementById('batalPopupPeminjaman');
 
+    // Membuka popup tambah peminjaman baru.
     function bukaPopupPeminjaman() {
         if (popupPeminjaman) {
             popupPeminjaman.classList.add('active');
@@ -880,6 +1120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Menutup popup tambah peminjaman baru.
     function tutupPopupPeminjaman() {
         if (popupPeminjaman) {
             popupPeminjaman.classList.remove('active');
@@ -914,5 +1155,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
-</body>
-</html>

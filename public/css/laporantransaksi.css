@@ -2,8 +2,8 @@
     box-sizing: border-box;
 }
 :root {
-    --sidebar-width: 140px;
-    --topbar-height: 30px;
+    --sidebar-width: 160px;
+    --topbar-height: 60px;
 }
 
 .main-content {
@@ -135,36 +135,55 @@
 .date-range input {
     min-width: 0;
     flex: 1;
+    font-family: inherit;
     font-weight: 500;
 }
 
 .separator {
     color: var(--text-muted);
+    font-family: inherit;
     font-weight: 500;
 }
 
 .search-box {
     flex: 1;
     min-width: 230px;
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 0 14px;
-}
-
-.search-icon {
-    width: 18px;
-    height: 18px;
-    color: #98a2b3;
-    flex-shrink: 0;
+    padding: 0;
 }
 
 .search-box input {
     width: 100%;
+    height: 100%;
+    padding-right: 42px;
 }
 
 .search-box input::placeholder {
     color: #98a2b3;
+}
+
+.search-submit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #7890aa;
+    cursor: pointer;
+}
+
+.search-submit i {
+    display: block;
+    font-size: 14px;
+    line-height: 1;
 }
 
 .hidden-submit {
@@ -321,7 +340,9 @@
 
 table {
     width: 100%;
+    min-width: 980px;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 thead th {
@@ -341,6 +362,8 @@ tbody td {
     font-size: 14px;
     color: #344054;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 tbody tr:last-child td {
@@ -349,6 +372,52 @@ tbody tr:last-child td {
 
 .checkbox-column {
     width: 40px;
+}
+
+thead th:nth-child(1),
+tbody td:nth-child(1) {
+    width: 4%;
+}
+
+thead th:nth-child(2),
+tbody td:nth-child(2) {
+    width: 11%;
+}
+
+thead th:nth-child(3),
+tbody td:nth-child(3) {
+    width: 15%;
+}
+
+thead th:nth-child(4),
+tbody td:nth-child(4) {
+    width: 23%;
+}
+
+thead th:nth-child(5),
+tbody td:nth-child(5) {
+    width: 11%;
+}
+
+thead th:nth-child(6),
+tbody td:nth-child(6) {
+    width: 13%;
+}
+
+thead th:nth-child(7),
+tbody td:nth-child(7) {
+    width: 11%;
+}
+
+thead th:nth-child(8),
+tbody td:nth-child(8) {
+    width: 12%;
+}
+
+tbody td:nth-child(3),
+tbody td:nth-child(4) {
+    white-space: normal;
+    line-height: 1.15;
 }
 
 .empty-state {
@@ -390,7 +459,44 @@ tbody tr:last-child td {
     padding: 14px 18px 16px;
     border-top: 1px solid var(--line-soft);
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.table-footer-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: #7890aa;
+    font-size: 12px;
+}
+
+.per-page-form {
+    margin: 0;
+}
+
+.per-page-form label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    color: #7890aa;
+    font-size: 12px;
+}
+
+.per-page-form select {
+    width: 58px;
+    height: 30px;
+    border: 1px solid #d9e2ec;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 8px;
+    outline: none;
 }
 
 .pagination {
@@ -439,6 +545,133 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
+.delete-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.35);
+}
+
+.delete-confirm-overlay.show {
+    display: flex;
+}
+
+.delete-confirm-box {
+    width: 460px;
+    max-width: calc(100vw - 32px);
+    overflow: hidden;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    animation: deletePopupFadeIn 0.2s ease;
+}
+
+.delete-confirm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.delete-confirm-header h3 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.delete-confirm-close {
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.delete-confirm-close:hover {
+    color: #475569;
+}
+
+.delete-confirm-body {
+    padding: 20px;
+}
+
+.delete-confirm-text {
+    margin: 0 0 14px;
+    color: #334155;
+    font-size: 15px;
+}
+
+.delete-confirm-detail {
+    display: grid;
+    gap: 8px;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 14px;
+}
+
+.delete-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+.btn-delete-batal,
+.btn-delete-submit {
+    min-width: 100px;
+    height: 42px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-delete-batal {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+}
+
+.btn-delete-batal:hover {
+    background: #f8fafc;
+}
+
+.btn-delete-submit {
+    border: none;
+    background: #0d6efd;
+    color: #ffffff;
+}
+
+.btn-delete-submit:hover {
+    background: #0b5ed7;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+@keyframes deletePopupFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 1100px) {
     .toolbar,
     .filter-form {
@@ -480,4 +713,103 @@ input[type="checkbox"] {
     .table-actions {
         flex-wrap: wrap;
     }
+}
+
+/* Shared sizing for admin table pages */
+body {
+    margin: 0;
+    background: #f3f4f6;
+    font-family: Arial, sans-serif;
+    color: #1f2937;
+}
+
+.page-header {
+    min-height: 38px;
+    margin-bottom: 20px;
+}
+
+.toolbar {
+    align-items: center;
+    gap: 12px;
+    min-height: 38px;
+    margin-bottom: 18px;
+}
+
+.field-group,
+.search-box,
+.export-button {
+    min-height: 38px;
+    height: 38px;
+    border-radius: 6px;
+}
+
+.field-label,
+.status-filter select,
+.date-range input,
+.search-box input,
+.export-button {
+    font-size: 13px;
+}
+
+.status-filter {
+    min-width: 156px;
+}
+
+.date-range {
+    min-width: 310px;
+}
+
+.search-box {
+    min-width: 310px;
+}
+
+.export-button {
+    min-width: 148px;
+    padding: 0 16px;
+    font-weight: 500;
+}
+
+.table-card {
+    border-color: #e5e7eb;
+    border-radius: 8px 8px 0 0;
+}
+
+thead th {
+    padding: 14px 16px;
+    background: #f1f4f8;
+    color: #003b8e;
+    font-size: 12px;
+}
+
+tbody td {
+    padding: 14px 16px;
+    color: #111827;
+    font-size: 13px;
+}
+
+.action-muted,
+.action-link {
+    font-size: 13px;
+}
+
+.status-badge {
+    min-width: 88px;
+    height: 26px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.pagination-wrap {
+    min-height: 48px;
+    padding: 9px 0 0;
+}
+
+.page-arrow,
+.page-number {
+    min-width: 30px;
+    height: 30px;
+    border: 0;
+    background: #f3f6f9;
+    font-size: 12px;
+    font-weight: 700;
 }

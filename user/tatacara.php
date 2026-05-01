@@ -9,10 +9,10 @@
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div class="panduan-tata-cara" ><div class="main" ><div class="hero-section" ><div class="container" ><div class="overlay-border-wrapper" ><div class="overlay-border" ><img class="checklist" src="../gambar/cara.png" /></div></div>
+<div class="panduan-tata-cara" ><div class="main" ><div class="hero-section" ><div class="container" ><div class="overlay-border-wrapper" ><div class="overlay-border" ><img class="checklist" src="../public/img/cara.png" /></div></div>
 <div class="heading" ><div class="text-wrapper" >Tata Cara</div></div>
 <div class="div-wrapper" ><div class="text" >Perpustakaan POLIJE</div></div></div></div></div>
-<div class="container-18" ><div class="section" ><div class="background" ><img class="background-2" src="../gambar/buku back.png" />
+<div class="container-18" ><div class="section" ><div class="background" ><img class="background-2" src="../public/img/buku back.png" />
 <div class="div-wrapper-3" ><p class="text-wrapper-7" >I. Tata Cara Peminjaman Buku</p></div></div>
 <div class="container-19" ><div class="container-20" ><div class="background-border" ><div class="overlay-shadow" ></div>
 <div class="text-13" >1</div></div>
@@ -44,7 +44,7 @@
 <div class="container-27" ><div class="background-border" ><div class="overlay-shadow" ></div>
 <div class="text-wrapper-14" >10</div></div>
 <div class="container-21" ><p class="jika-semua-data" >&nbsp;&nbsp;Jika semua data sudah benar, petugas menekan klik selesai untuk menyimpan transaksi peminjaman.</p></div></div></div></div>
-<div class="section-2" ><div class="background" ><img class="background-2" src="../gambar/buku back.png" />
+<div class="section-2" ><div class="background" ><img class="background-2" src="../public/img/buku back.png" />
 <div class="div-wrapper-3" ><p class="text-wrapper-7" >II. Tata Cara Pengembalian Buku</p></div></div>
 <div class="container-19" ><div class="container-20" ><div class="background-border" ><div class="overlay-shadow" ></div>
 <div class="text-13" >1</div></div>

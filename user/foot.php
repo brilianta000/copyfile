@@ -37,9 +37,9 @@ $base = ($caller_dir_name === 'user') ? '' : '../';
        <li><a href="<?php echo $base; ?>beranda.php">Beranda</a></li>
         <li><a href="<?php echo $base; ?>profil.php"> Profil</a></li>
          <li><a href="<?php echo $base; ?>lokasi.php"> Lokasi & Jam Kerja</a></li>
-        <li><a href="<?php echo $base; ?>tata tertib/tatatertib.php"> Tata Tertib</a></li>
-         <li><a href="<?php echo $base; ?>tata cara/tatacara.php"> Tata Cara</a></li>
-        <li><a href="<?php echo $base; ?>koleksi/koleksi.php"> Koleksi</a></li>
+        <li><a href="<?php echo $base; ?>tatatertib.php"> Tata Tertib</a></li>
+         <li><a href="<?php echo $base; ?>tatacara.php"> Tata Cara</a></li>
+        <li><a href="<?php echo $base; ?>koleksi.php"> Koleksi</a></li>
       </ul>
     </div>
 

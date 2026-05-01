@@ -1,116 +1,165 @@
-    /* =====================
-       SIDEBAR — FIXED
-    ===================== */
-    .sidebar {
-      width: 160px;
-      height: 100vh;
-      background: linear-gradient(180deg, #002147 0%, #0050ad 100%);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      padding: 1.25rem 0.75rem;
-      overflow-y: auto;
-    }
-    .sidebar-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1.75rem;
-      padding: 0 0.25rem;
-    }
-    .sidebar-brand-icon {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      background: #1a6b3c;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .sidebar-brand-text {
-      font-family: 'Inter-Bold', Helvetica, sans-serif;
-      font-size: 1.1rem;
-      color: #fff;
-      font-weight: 700;
-    }
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.55rem 0.75rem;
-      border-radius: 0.5rem;
-      color: #fff;
-      font-family: 'Inter-SemiBold', Helvetica, sans-serif;
-      font-size: 0.875rem;
-      cursor: pointer;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: background 0.15s;
-    }
-    .sidebar-item.active { background-color: rgba(255,255,255,0.18); }
-    .sidebar-item:hover:not(.active) { background-color: rgba(255,255,255,0.08); color: #fff; }
-    .sidebar-subitem {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      color: #fff;
-      font-family: 'Inter-Bold', Helvetica, sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      text-decoration: none;
-      white-space: nowrap;
-      border-radius: 0.4rem;
-      transition: background 0.15s;
-    }
-    .sidebar-subitem:hover { background-color: rgba(255,255,255,0.08); color: #fff; }
-    .sidebar-subitem i { font-size: 0.9rem; flex-shrink: 0; }
-
-    /* =====================
-       TOPBAR — FIXED
-    ===================== */
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 160px;
-      right: 0;
-      height: 60px;
-      background-color: #002147;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.5rem;
-      z-index: 190;
-    }
-    .topbar-title {
-      font-family: 'Inter-Bold', Helvetica, sans-serif;
-      font-size: 1.4rem;
-      color: #fff;
-      font-weight: 700;
-    }
-    .topbar-avatar {
-      width: 40px; height: 40px;
-      background-color: #1e3f6e;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff;
-      font-size: 1.25rem;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .sidebar-subitem.active {
-  background-color: rgba(255,255,255,0.18);
+/* =====================
+   SIDEBAR FIXED
+===================== */
+.sidebar {
+  width: 160px;
+  height: 100vh;
+  background: linear-gradient(180deg, #062744 0%, #064b8f 52%, #075db8 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 14px;
+  overflow-y: auto;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
-.sidebar-subitem:hover:not(.active) {
-  background-color: rgba(255,255,255,0.08);
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 36px;
+  margin-bottom: 20px;
+  padding: 0 7px;
+}
+
+.sidebar-brand-icon {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sidebar-brand-icon img {
+  width: 29px;
+  height: 29px;
+  display: block;
+  object-fit: contain;
+}
+
+.sidebar-brand-text {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 17px;
   color: #fff;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.1px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-divider {
+  height: 7px;
+  flex-shrink: 0;
+}
+
+.sidebar-item,
+.sidebar-subitem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-item {
+  min-height: 31px;
+  padding: 0 10px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.sidebar-subitem {
+  min-height: 27px;
+  gap: 7px;
+  padding: 0 10px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.sidebar-item.active,
+.sidebar-subitem.active {
+  background-color: rgba(94, 135, 178, 0.55);
+}
+
+.sidebar-item:hover,
+.sidebar-subitem:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.sidebar-subitem i {
+  width: 14px;
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* =====================
+   TOPBAR FIXED
+===================== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 160px;
+  right: 0;
+  height: 60px;
+  background-color: #062744;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 22px;
+  z-index: 190;
+  font-family: "Segoe UI", Arial, sans-serif;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.topbar-title {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 20px;
+  color: #fff;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.1px;
+}
+
+.topbar-account {
+  display: inline-flex;
+  color: inherit;
+  text-decoration: none;
+}
+
+.topbar-avatar {
+  width: 34px;
+  height: 34px;
+  background-color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  font-size: 23px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.topbar-account:hover .topbar-avatar {
+  background-color: #f2f6fb;
 }

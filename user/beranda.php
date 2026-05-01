@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Perpustakaan Polije</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="../public/css/style.css?v=2">
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

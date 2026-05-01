@@ -4,7 +4,9 @@
 | BACA & UPDATE DATA ADMIN DARI JSON
 |--------------------------------------------------------------------------
 */
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+    @session_start();
+}
 
 $adminFile = __DIR__ . '/data_admin.json';
 
@@ -35,7 +37,7 @@ $last_login = $_SESSION['last_login'];
 |--------------------------------------------------------------------------
 */
 $pesan = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aksi']) && $_POST['aksi'] === 'edit') {
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['aksi']) && $_POST['aksi'] === 'edit') {
     $admin['nama']    = trim($_POST['nama']    ?? $admin['nama']);
     $admin['jabatan'] = trim($_POST['jabatan'] ?? $admin['jabatan']);
     $admin['email']   = trim($_POST['email']   ?? $admin['email']);

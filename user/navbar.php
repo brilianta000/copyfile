@@ -62,7 +62,7 @@ $base = ($caller_dir_name === 'user') ? '' : '../';
         </ul>
 
         <div class="profile-section">
-    <a href="<?php echo $base; ?>../auth/login.php" class="profile-btn">
+    <a href="<?php echo $base; ?>../login.php" class="profile-btn">
         <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
             <circle cx="12" cy="7" r="4"/>
             <path d="M5 21c0-4 14-4 14 0"/>

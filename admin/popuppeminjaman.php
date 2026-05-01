@@ -1,3 +1,4 @@
+<!-- Popup form tambah peminjaman baru -->
 <div class="popup-overlay <?= $openPopup ? 'active' : ''; ?>" id="popupPeminjaman">
     <div class="popup-box">
         <div class="popup-header">
@@ -5,6 +6,7 @@
             <button type="button" class="popup-close" id="closePopupPeminjaman" aria-label="Tutup">&times;</button>
         </div>
 
+        <!-- Form create peminjaman, diproses oleh halaman peminjaman -->
         <form method="post">
             <div class="popup-body">
                 <?php if (!empty($errors)): ?>
@@ -13,7 +15,9 @@
                     </div>
                 <?php endif; ?>
 
+                <!-- Penanda action agar handler POST tahu proses yang diminta -->
                 <input type="hidden" name="action" value="add_peminjaman">
+                <input type="hidden" name="per_page" value="<?= (int) ($perPage ?? 7); ?>">
 
                 <div class="form-group">
                     <label for="popup_nim">NIM</label>
@@ -61,6 +65,7 @@
                 $tglKembaliValue = !empty($oldInput['tgl_kembali']) ? $oldInput['tgl_kembali'] : defaultTanggalKembali();
                 ?>
 
+                <!-- Tanggal otomatis, hanya ditampilkan sebagai readonly -->
                 <div class="form-row">
                     <div class="form-date">
                         <label for="popup_tgl_pinjam_view">Tanggal Pinjam</label>

@@ -9,7 +9,9 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (($_GET['action'] ?? '') !== 'export' && session_status() === PHP_SESSION_NONE) {
+    @session_start();
+}
 $laporanFile = __DIR__ . '/data_laporan_transaksi.json';
 
 /*
@@ -17,6 +19,7 @@ $laporanFile = __DIR__ . '/data_laporan_transaksi.json';
 | DATA AWAL LAPORAN
 |--------------------------------------------------------------------------
 */
+// Menyediakan data awal laporan transaksi ketika JSON belum tersedia.
 function defaultLaporanTransaksi()
 {
     return [
@@ -35,6 +38,7 @@ function defaultLaporanTransaksi()
     ];
 }
 
+// Membaca data laporan transaksi dari JSON.
 function loadLaporanTransaksi($file)
 {
     if (!file_exists($file)) {
@@ -55,6 +59,7 @@ function loadLaporanTransaksi($file)
     return $data;
 }
 
+// Menyimpan data laporan transaksi ke JSON.
 function saveLaporanTransaksi($file, $data)
 {
     file_put_contents(
@@ -64,6 +69,7 @@ function saveLaporanTransaksi($file, $data)
     );
 }
 
+// Memperbarui status laporan sesuai tanggal kembali dan jatuh tempo.
 function refreshStatusLaporan(array $item)
 {
     if (!empty($item['tgl_kembali'])) {
@@ -84,11 +90,13 @@ function refreshStatusLaporan(array $item)
 | HELPER FUNCTIONS
 |--------------------------------------------------------------------------
 */
+// Escape output laporan agar aman ditampilkan ke HTML.
 function escape($value)
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
+// Memformat tanggal untuk tampilan tabel.
 function formatTanggal($tanggal)
 {
     if (empty($tanggal)) {
@@ -98,11 +106,23 @@ function formatTanggal($tanggal)
     return date('d M Y', strtotime($tanggal));
 }
 
+// Memformat tanggal khusus untuk export PDF.
+function formatTanggalPdf($tanggal)
+{
+    if (empty($tanggal)) {
+        return '-';
+    }
+
+    return date('d-m-Y', strtotime($tanggal));
+}
+
+// Mengambil nama menu aktif untuk URL laporan.
 function getCurrentMenuLaporan()
 {
     return $_GET['menu'] ?? 'laporan';
 }
 
+// Membuat query string untuk filter laporan.
 function buatQuery(array $tambahan = [], array $hapus = [])
 {
     $query = array_merge(
@@ -125,11 +145,13 @@ function buatQuery(array $tambahan = [], array $hapus = [])
     return http_build_query($query);
 }
 
+// Membuat URL export laporan dengan filter aktif.
 function buildExportUrl(array $tambahan = [], array $hapus = [])
 {
-    $query = $_GET;
-
-    unset($query['menu']);
+    $query = array_merge(
+        ['menu' => getCurrentMenuLaporan()],
+        $_GET
+    );
 
     foreach ($hapus as $key) {
         unset($query[$key]);
@@ -143,9 +165,23 @@ function buildExportUrl(array $tambahan = [], array $hapus = [])
         }
     }
 
-    return 'laporantransaksi/laporantransaksi.php?' . http_build_query($query);
+    return '?' . http_build_query($query);
 }
 
+// Menyediakan opsi jumlah data laporan per halaman.
+function getLaporanPerPageOptions(): array
+{
+    return [5, 7, 10, 15, 20];
+}
+
+// Memvalidasi jumlah data laporan per halaman.
+function normalizeLaporanPerPage($value, int $default = 5): int
+{
+    $value = (int) $value;
+    return in_array($value, getLaporanPerPageOptions(), true) ? $value : $default;
+}
+
+// Menentukan class CSS berdasarkan status laporan.
 function getStatusClass($status)
 {
     if ($status === 'Dikembalikan') {
@@ -168,38 +204,57 @@ function getStatusClass($status)
 | EXPORT PDF
 |--------------------------------------------------------------------------
 */
+// Mengambil CSS untuk tampilan export PDF.
 function getPdfStyles()
 {
-    $pdfCssPath = __DIR__ . '/laporantransaksipdf.css';
+    $pdfCssPath = __DIR__ . '/../../public/css/laporantransaksipdf.css';
 
     if (file_exists($pdfCssPath)) {
         return file_get_contents($pdfCssPath);
     }
 
-    return 'body{font-family:DejaVu Sans,sans-serif;font-size:12px;color:#344054;margin:24px;} .report-title{font-size:22px;font-weight:700;margin:0 0 14px;color:#1d2939;} .filter-list{margin:0 0 16px;padding:0;list-style:none;} .filter-list li{display:inline-block;margin:0 8px 8px 0;padding:7px 12px;border:1px solid #e4e7ec;border-radius:999px;background:#f8fafc;font-size:11px;color:#475467;} .report-table{width:100%;border-collapse:collapse;} .report-table th{padding:12px 14px;background:#fafbfc;border:1px solid #edf0f4;font-size:11px;font-weight:700;color:#98a2b3;text-align:left;} .report-table td{padding:12px 14px;border:1px solid #edf0f4;font-size:12px;color:#344054;vertical-align:middle;} .badge{display:inline-block;padding:6px 12px;border-radius:4px;font-size:10px;font-weight:700;color:#ffffff;} .badge-green{background:#22c55e;} .badge-red{background:#ef4444;} .badge-blue{background:#0f56b8;} .badge-default{background:#667085;} .empty-state{text-align:center;padding:28px 12px;color:#667085;}';
+    return 'body{font-family:DejaVu Sans,Arial,sans-serif;font-size:10px;color:#000;margin:0}.letterhead{position:relative;min-height:82px;border-bottom:2px solid #111;margin-bottom:8px}.letterhead-logo{position:absolute;left:68px;top:0;width:72px}.letterhead-text{text-align:center;font-weight:700;line-height:1.15;font-size:14px}.letterhead-address{font-weight:400;font-size:10px}.report-heading{text-align:center;margin:8px 0 10px;font-size:11px}.report-table{width:100%;border-collapse:collapse}.report-table th,.report-table td{border:1px solid #202840;padding:4px 5px;font-size:9px;line-height:1.2}.report-table th{text-align:center;font-weight:700}.empty-state{text-align:center;padding:18px}';
 }
 
-function buildFilterText($statusFilter, $startDate, $endDate, $keyword)
+// Mengubah logo Polije menjadi data URI untuk PDF.
+function getLogoPolijeDataUri(): string
 {
-    $items = [];
-    $items[] = 'Status: ' . ($statusFilter !== '' ? $statusFilter : 'Semua');
+    $logoPath = __DIR__ . '/../../logo_polije.png';
 
-    if ($startDate !== '' || $endDate !== '') {
-        $tanggal = 'Tanggal: ' . ($startDate !== '' ? formatTanggal($startDate) : '-') . ' - ' . ($endDate !== '' ? formatTanggal($endDate) : '-');
-        $items[] = $tanggal;
+    if (!file_exists($logoPath)) {
+        return '';
     }
 
-    if ($keyword !== '') {
-        $items[] = 'Pencarian: ' . $keyword;
-    }
-
-    return $items;
+    $data = base64_encode(file_get_contents($logoPath));
+    return 'data:image/png;base64,' . $data;
 }
 
+// Menghitung denda laporan berdasarkan keterlambatan.
+function hitungDendaLaporan(array $row): string
+{
+    $jatuhTempo = $row['tgl_jatuh_tempo'] ?? '';
+
+    if ($jatuhTempo === '') {
+        return 'Rp 0';
+    }
+
+    $tanggalKembali = !empty($row['tgl_kembali']) ? $row['tgl_kembali'] : date('Y-m-d');
+    $jatuhTempoTime = strtotime($jatuhTempo);
+    $tanggalKembaliTime = strtotime($tanggalKembali);
+
+    if (!$jatuhTempoTime || !$tanggalKembaliTime || $tanggalKembaliTime <= $jatuhTempoTime) {
+        return 'Rp 0';
+    }
+
+    $hariTerlambat = (int) floor(($tanggalKembaliTime - $jatuhTempoTime) / 86400);
+    return 'Rp ' . number_format($hariTerlambat * 500, 0, ',', '.');
+}
+
+// Membuat HTML laporan yang akan dipakai untuk PDF.
 function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword, $autoPrint = false, $showPrintNote = false)
 {
-    $filters = buildFilterText($statusFilter, $startDate, $endDate, $keyword);
     $styles = getPdfStyles();
+    $logoDataUri = getLogoPolijeDataUri();
 
     ob_start();
     ?>
@@ -212,53 +267,49 @@ function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword
     </style>
 </head>
 <body>
-    <div class="main-content"></div>
     <div class="report-wrapper">
-        <h1 class="report-title">Laporan Transaksi</h1>
+        <div class="letterhead">
+            <?php if ($logoDataUri !== ''): ?>
+                <img src="<?= $logoDataUri ?>" class="letterhead-logo" alt="Logo Polije">
+            <?php endif; ?>
+            <div class="letterhead-text">
+                <div>PERPUSTAKAAN</div>
+                <div>POLITEKNIK NEGERI JEMBER</div>
+                <div class="letterhead-address">Jl. Mastrip PO BOX 164, Jember - Jawa Timur- Indonesia</div>
+            </div>
+        </div>
 
-        <ul class="filter-list">
-            <?php foreach ($filters as $filter): ?>
-                <li><?= escape($filter) ?></li>
-            <?php endforeach; ?>
-        </ul>
+        <div class="report-heading">Laporan Peminjaman Buku</div>
 
         <table class="report-table">
             <thead>
                 <tr>
-                    <th>Tanggal</th>
+                    <th>No</th>
                     <th>Peminjam</th>
                     <th>Judul Buku</th>
-                    <th>Tgl. Pinjam</th>
-                    <th>Tgl. Jatuh Tempo</th>
-                    <th>Tgl. Kembali</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Tanggal Jatuh Tempo</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Denda</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($laporan)): ?>
                     <tr>
-                        <td colspan="7" class="empty-state">Data laporan tidak ditemukan.</td>
+                        <td colspan="8" class="empty-state">Data laporan tidak ditemukan.</td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($laporan as $row): ?>
-                        <?php
-                        $badgeClass = 'badge-default';
-                        if ($row['status'] === 'Dikembalikan') {
-                            $badgeClass = 'badge-green';
-                        } elseif ($row['status'] === 'Terlambat') {
-                            $badgeClass = 'badge-orange';
-                        } elseif ($row['status'] === 'Belum Kembali') {
-                            $badgeClass = 'badge-red';
-                        }
-                        ?>
+                    <?php foreach ($laporan as $index => $row): ?>
                         <tr>
-                            <td><?= escape(formatTanggal($row['tanggal'])) ?></td>
+                            <td class="text-center"><?= (int) $index + 1 ?>.</td>
                             <td><?= escape($row['peminjam']) ?></td>
                             <td><?= escape($row['judul_buku']) ?></td>
-                            <td><?= escape(formatTanggal($row['tgl_pinjam'])) ?></td>
-                            <td><?= escape(formatTanggal($row['tgl_jatuh_tempo'])) ?></td>
-                            <td><?= escape(formatTanggal($row['tgl_kembali'])) ?></td>
-                            <td><span class="badge <?= $badgeClass ?>"><?= escape($row['status']) ?></span></td>
+                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_pinjam'])) ?></td>
+                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_jatuh_tempo'])) ?></td>
+                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_kembali'])) ?></td>
+                            <td class="text-center"><?= escape(hitungDendaLaporan($row)) ?></td>
+                            <td class="text-center"><?= escape($row['status']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -266,14 +317,6 @@ function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword
         </table>
     </div>
 
-    <?php if ($autoPrint): ?>
-        <script>
-            window.addEventListener('load', function () {
-                window.print();
-            });
-        </script>
-        </div>
-    <?php endif; ?>
 </body>
 </html>
 <?php
@@ -281,6 +324,7 @@ function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword
     return ob_get_clean();
 }
 
+// Membuat dan mengirim file PDF laporan.
 function exportLaporanPdf($laporan, $statusFilter, $startDate, $endDate, $keyword)
 {
     $html = buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword, false, false);
@@ -294,7 +338,7 @@ function exportLaporanPdf($laporan, $statusFilter, $startDate, $endDate, $keywor
     $dompdf->setPaper('A4', 'landscape');
     $dompdf->loadHtml($html, 'UTF-8');
     $dompdf->render();
-    $dompdf->stream('laporantransaksi.pdf', ['Attachment' => true]);
+    $dompdf->stream('laporan-peminjaman-buku.pdf', ['Attachment' => true]);
     exit;
 }
 
@@ -303,10 +347,11 @@ function exportLaporanPdf($laporan, $statusFilter, $startDate, $endDate, $keywor
 | PROSES HAPUS DATA
 |--------------------------------------------------------------------------
 */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_selected'])) {
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['delete_selected'])) {
     $selectedIds = array_map('intval', $_POST['selected_ids'] ?? []);
     $laporanData = loadLaporanTransaksi($laporanFile);
 
+    // Hapus hanya data yang dipilih melalui checkbox tabel.
     if (!empty($selectedIds)) {
         $laporanData = array_values(array_filter(
             $laporanData,
@@ -334,7 +379,7 @@ $startDate = array_key_exists('start_date', $_GET) ? $_GET['start_date'] : '';
 $endDate = array_key_exists('end_date', $_GET) ? $_GET['end_date'] : '';
 $keyword = trim($_GET['keyword'] ?? '');
 $page = max(1, (int) ($_GET['page'] ?? 1));
-$perPage = 5;
+$perPage = normalizeLaporanPerPage($_GET['per_page'] ?? 5);
 
 $semuaLaporan = array_map('refreshStatusLaporan', loadLaporanTransaksi($laporanFile));
 saveLaporanTransaksi($laporanFile, $semuaLaporan);
@@ -379,6 +424,7 @@ $laporan = array_values(array_filter($laporanDashboard, function ($item) use ($s
 }));
 
 if (isset($_GET['action']) && $_GET['action'] === 'export') {
+    // Export memakai data laporan yang sudah mengikuti filter aktif.
     exportLaporanPdf($laporan, $statusFilter, $startDate, $endDate, $keyword);
 }
 
@@ -423,10 +469,12 @@ $returnQuery = buatQuery([], ['action']);
             <h1>Laporan Transaksi</h1>
         </header>
 
+        <!-- Toolbar filter, pencarian, dan export laporan -->
         <section class="toolbar">
             <form method="GET" class="filter-form" id="filter-form">
                 <input type="hidden" name="menu" value="<?= escape($_GET['menu'] ?? 'laporan') ?>">
                 <input type="hidden" name="page" value="1">
+                <input type="hidden" name="per_page" value="<?= (int) $perPage ?>">
                 <div class="field-group status-filter">
                     <span class="field-label">Tampilkan:</span>
                     <select name="status" id="status-filter">
@@ -442,16 +490,15 @@ $returnQuery = buatQuery([], ['action']);
 
                 <div class="field-group date-range">
                     <input type="date" name="start_date" value="<?= escape($startDate) ?>" id="start-date">
-                    <span class="separator">—</span>
+                    <span class="separator">&ndash;</span>
                     <input type="date" name="end_date" value="<?= escape($endDate) ?>" id="end-date">
                 </div>
 
                 <div class="search-box">
-                    <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
-                        <path d="M16 16L20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-                    </svg>
                     <input type="text" name="keyword" placeholder="Cari peminjam / buku..." value="<?= escape($keyword) ?>">
+                    <button type="submit" class="search-submit" aria-label="Cari laporan">
+                        <i class="bi bi-search"></i>
+                    </button>
                 </div>
 
                 <button type="submit" class="hidden-submit" aria-hidden="true" tabindex="-1">Terapkan</button>
@@ -468,6 +515,7 @@ $returnQuery = buatQuery([], ['action']);
 </a>
         </section>
 
+        <!-- Ringkasan statistik laporan sesuai filter tanggal -->
         <section class="dashboard-cards">
     <article class="card card-blue">
         <div class="card-top">
@@ -523,6 +571,7 @@ $returnQuery = buatQuery([], ['action']);
     </article>
 </section>
 
+        <!-- Tabel laporan dan aksi hapus data terpilih -->
         <section class="table-card">
             <form method="POST">
                 <input type="hidden" name="return_query" value="<?= escape($returnQuery) ?>">
@@ -534,7 +583,7 @@ $returnQuery = buatQuery([], ['action']);
                     <span class="action-muted">Pilih:</span>
                     <button type="button" class="action-link" id="select-all-trigger">Semua</button>
                     <span class="action-divider">|</span>
-                    <button type="submit" name="delete_selected" class="action-link delete-link" onclick="return confirmDelete()">Hapus Dipilih</button>
+                    <button type="button" class="action-link delete-link" id="openDeleteConfirm">Hapus Dipilih</button>
                 </div>
 
                 <div class="table-responsive">
@@ -575,9 +624,51 @@ $returnQuery = buatQuery([], ['action']);
                         </tbody>
                     </table>
                 </div>
+
+                <div class="delete-confirm-overlay" id="deleteConfirmOverlay" aria-hidden="true">
+                    <div class="delete-confirm-box">
+                        <div class="delete-confirm-header">
+                            <h3>Konfirmasi Hapus</h3>
+                            <button type="button" class="delete-confirm-close" id="deleteConfirmClose" aria-label="Tutup">&times;</button>
+                        </div>
+
+                        <div class="delete-confirm-body">
+                            <p class="delete-confirm-text">Yakin ingin menghapus data laporan yang dipilih?</p>
+                            <div class="delete-confirm-detail">
+                                <div><strong>Jumlah data:</strong> <span id="deleteConfirmCount">0</span></div>
+                                <div><strong>Menu:</strong> Laporan Peminjaman Buku</div>
+                            </div>
+                        </div>
+
+                        <div class="delete-confirm-actions">
+                            <button type="button" class="btn-delete-batal" id="deleteConfirmCancel">Batal</button>
+                            <button type="submit" name="delete_selected" class="btn-delete-submit">Hapus</button>
+                        </div>
+                    </div>
+                </div>
             </form>
 
             <div class="pagination-wrap">
+                <div class="table-footer-info">
+                    <span>Menampilkan <?= (int) ($totalData > 0 ? $offset + 1 : 0) ?>-<?= (int) ($totalData > 0 ? min($offset + $perPage, $totalData) : 0) ?> dari <?= (int) $totalData ?> data</span>
+                    <form method="get" class="per-page-form">
+                        <input type="hidden" name="menu" value="<?= escape($_GET['menu'] ?? 'laporan') ?>">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="status" value="<?= escape($statusFilter) ?>">
+                        <input type="hidden" name="start_date" value="<?= escape($startDate) ?>">
+                        <input type="hidden" name="end_date" value="<?= escape($endDate) ?>">
+                        <input type="hidden" name="keyword" value="<?= escape($keyword) ?>">
+                        <label>
+                            <span>Tampilkan</span>
+                            <select name="per_page" onchange="this.form.submit()">
+                                <?php foreach (getLaporanPerPageOptions() as $option): ?>
+                                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <span>data</span>
+                        </label>
+                    </form>
+                </div>
                 <div class="pagination">
                     <?php $prevDisabled = $page <= 1; ?>
                     <a class="page-arrow <?= $prevDisabled ? 'disabled' : '' ?>" href="<?= $prevDisabled ? '#' : '?' . escape(buatQuery(['page' => $page - 1], ['action'])) ?>" aria-label="Halaman sebelumnya">
@@ -614,7 +705,13 @@ $returnQuery = buatQuery([], ['action']);
         const selectAll = document.getElementById('select-all');
         const selectAllTrigger = document.getElementById('select-all-trigger');
         const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+        const openDeleteConfirm = document.getElementById('openDeleteConfirm');
+        const deleteConfirmOverlay = document.getElementById('deleteConfirmOverlay');
+        const deleteConfirmClose = document.getElementById('deleteConfirmClose');
+        const deleteConfirmCancel = document.getElementById('deleteConfirmCancel');
+        const deleteConfirmCount = document.getElementById('deleteConfirmCount');
 
+        // Auto-submit filter status dan rentang tanggal.
         [statusFilterElement, startDate, endDate].forEach(function (element) {
             if (!element) {
                 return;
@@ -625,6 +722,7 @@ $returnQuery = buatQuery([], ['action']);
             });
         });
 
+        // Mengatur semua checkbox baris laporan.
         function setAllCheckboxes(checked) {
             rowCheckboxes.forEach(function (checkbox) {
                 checkbox.checked = checked;
@@ -656,12 +754,59 @@ $returnQuery = buatQuery([], ['action']);
             });
         });
 
-        function confirmDelete() {
+        // Membuka popup konfirmasi hapus laporan terpilih.
+        function openDeleteModal() {
             const totalChecked = document.querySelectorAll('.row-checkbox:checked').length;
             if (totalChecked === 0) {
                 alert('Pilih data yang ingin dihapus terlebih dahulu.');
-                return false;
+                return;
             }
-            return confirm('Hapus laporan yang dipilih?');
+
+            if (deleteConfirmCount) {
+                deleteConfirmCount.textContent = totalChecked;
+            }
+
+            if (deleteConfirmOverlay) {
+                deleteConfirmOverlay.classList.add('show');
+                deleteConfirmOverlay.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('modal-open');
+            }
         }
+
+        // Menutup popup konfirmasi hapus laporan.
+        function closeDeleteModal() {
+            if (!deleteConfirmOverlay) {
+                return;
+            }
+
+            deleteConfirmOverlay.classList.remove('show');
+            deleteConfirmOverlay.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+        }
+
+        if (openDeleteConfirm) {
+            openDeleteConfirm.addEventListener('click', openDeleteModal);
+        }
+
+        if (deleteConfirmClose) {
+            deleteConfirmClose.addEventListener('click', closeDeleteModal);
+        }
+
+        if (deleteConfirmCancel) {
+            deleteConfirmCancel.addEventListener('click', closeDeleteModal);
+        }
+
+        if (deleteConfirmOverlay) {
+            deleteConfirmOverlay.addEventListener('click', function (event) {
+                if (event.target === deleteConfirmOverlay) {
+                    closeDeleteModal();
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && deleteConfirmOverlay && deleteConfirmOverlay.classList.contains('show')) {
+                closeDeleteModal();
+            }
+        });
     </script>

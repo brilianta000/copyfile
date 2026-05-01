@@ -4,14 +4,17 @@
 | BACA DATA DARI JSON
 |--------------------------------------------------------------------------
 */
-$peminjamanFile  = __DIR__ . '/../data_peminjaman.json';
-$laporanFile     = __DIR__ . '/../data_laporan_transaksi.json';
+$peminjamanFile  = __DIR__ . '/data_peminjaman.json';
+$laporanFile     = __DIR__ . '/data_laporan_transaksi.json';
+$bukuFile        = __DIR__ . '/data_buku.json';
 
 $peminjaman = file_exists($peminjamanFile) ? json_decode(file_get_contents($peminjamanFile), true) : [];
 $laporan    = file_exists($laporanFile)    ? json_decode(file_get_contents($laporanFile),    true) : [];
+$buku        = file_exists($bukuFile)       ? json_decode(file_get_contents($bukuFile),       true) : [];
 
 if (!is_array($peminjaman)) $peminjaman = [];
 if (!is_array($laporan))    $laporan    = [];
+if (!is_array($buku))       $buku       = [];
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +23,8 @@ if (!is_array($laporan))    $laporan    = [];
 */
 $today = date('Y-m-d');
 
-// Total judul buku unik dari laporan
-$judulList   = array_unique(array_column($laporan, 'judul_buku'));
-$total_buku  = count($judulList);
+// Total judul buku dari data buku
+$total_buku  = count($buku);
 
 // Sedang dipinjam = Belum Kembali
 $dipinjam  = count(array_filter($laporan, fn($r) => $r['status'] === 'Belum Kembali'));
@@ -30,8 +32,9 @@ $dipinjam  = count(array_filter($laporan, fn($r) => $r['status'] === 'Belum Kemb
 // Terlambat
 $terlambat = count(array_filter($laporan, fn($r) => $r['status'] === 'Terlambat'));
 
-// Tersedia
-$tersedia  = max(0, $total_buku - $dipinjam - $terlambat);
+// Tersedia dihitung dari stok data buku dikurangi peminjaman aktif
+$total_stok = array_sum(array_map(fn($item) => (int) ($item['stok'] ?? 0), $buku));
+$tersedia  = max(0, $total_stok - count($peminjaman));
 
 // Total anggota (NIM unik)
 $total_anggota = count(array_unique(array_column($peminjaman, 'nim')));
@@ -47,7 +50,7 @@ $logs_recent = array_slice($logs_sorted, 0, 10);
 
 /*
 |--------------------------------------------------------------------------
-| DATA GRAFIK — Peminjaman per bulan (6 bulan terakhir)
+| DATA GRAFIK â€” Peminjaman per bulan (6 bulan terakhir)
 |--------------------------------------------------------------------------
 */
 $bulan_labels = [];
@@ -66,15 +69,14 @@ $chart_max = max(max($bulan_data), 1);
 | INFO ADMIN (dari session jika tersedia)
 |--------------------------------------------------------------------------
 */
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+    @session_start();
+}
 $admin_nama    = $_SESSION['nama']    ?? 'Administrator';
 $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
 ?>
 
-<link rel="stylesheet" href="../admin/css/dash.css">
-
-<div class="main-content">
-    <div class="dash-container">
+<div class="dash-container">
 
         <!-- STAT CARDS -->
         <div class="stat-grid">
@@ -143,7 +145,7 @@ $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
                                     'Terlambat'    => 'badge-terlambat',
                                     default        => 'badge-pinjam',
                                 };
-                                $idShort = substr($log['source_id'], 0, 14) . '…';
+                                $idShort = substr($log['source_id'], 0, 14) . 'â€¦';
                             ?>
                             <tr>
                                 <td class="id-col" title="<?= htmlspecialchars($log['source_id']) ?>">
@@ -207,5 +209,4 @@ $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
             </div>
         </div>
 
-    </div>
 </div>

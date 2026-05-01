@@ -16,22 +16,24 @@ body {
    LAYOUT
    ============================================= */
 :root {
-    --sidebar-width: 60px;
-    --topbar-height: 14px;
+    --sidebar-width: 160px;
+    --topbar-height: 60px;
 }
 
-.main-content {
+body > main.main-content {
     margin-left: var(--sidebar-width);
     margin-top: var(--topbar-height);
-    padding: 28px 32px;
+    padding: 20px;
     min-height: calc(100vh - var(--topbar-height));
 }
 
 .dash-container {
-    max-width: 1300px;
+    width: 100%;
+    max-width: none;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
+    padding: 18px 24px 28px;
 }
 
 /* =============================================
@@ -151,7 +153,9 @@ body {
 
 .log-table {
     width: 100%;
+    min-width: 900px;
     border-collapse: collapse;
+    table-layout: fixed;
     font-size: 13px;
 }
 
@@ -175,11 +179,49 @@ body {
     border-bottom: 1px solid #f0f2f7;
     color: #3d4a5c;
     vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .log-table tbody tr:last-child td { border-bottom: none; }
 
 .log-table tbody tr:hover td { background: #fafbfc; }
+
+.log-table th:nth-child(1),
+.log-table td:nth-child(1) {
+    width: 17%;
+}
+
+.log-table th:nth-child(2),
+.log-table td:nth-child(2) {
+    width: 15%;
+}
+
+.log-table th:nth-child(3),
+.log-table td:nth-child(3) {
+    width: 22%;
+}
+
+.log-table th:nth-child(4),
+.log-table td:nth-child(4) {
+    width: 14%;
+}
+
+.log-table th:nth-child(5),
+.log-table td:nth-child(5) {
+    width: 16%;
+}
+
+.log-table th:nth-child(6),
+.log-table td:nth-child(6) {
+    width: 16%;
+}
+
+.log-table td:nth-child(2),
+.log-table td:nth-child(3) {
+    white-space: normal;
+    line-height: 1.2;
+}
 
 .id-col {
     font-family: monospace;

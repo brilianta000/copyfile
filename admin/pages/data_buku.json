@@ -1,0 +1,173 @@
+[
+    {
+        "id": 1,
+        "judul": "Laskar Pelangi",
+        "penulis": "Andrea Hirata",
+        "penerbit": "Bentang Pustaka",
+        "tahun": 2005,
+        "kategori": "Fiksi",
+        "stok": 24
+    },
+    {
+        "id": 2,
+        "judul": "Bumi Manusia",
+        "penulis": "Pramoedya Ananta Toer",
+        "penerbit": "Hasta Mitra",
+        "tahun": 1980,
+        "kategori": "Fiksi Sejarah",
+        "stok": 12
+    },
+    {
+        "id": 3,
+        "judul": "Filosofi Teras",
+        "penulis": "Henry Manampiring",
+        "penerbit": "Kompas",
+        "tahun": 2018,
+        "kategori": "Non-Fiksi",
+        "stok": 45
+    },
+    {
+        "id": 4,
+        "judul": "Atomic Habits",
+        "penulis": "James Clear",
+        "penerbit": "Gramedia",
+        "tahun": 2019,
+        "kategori": "Edukasi",
+        "stok": 89
+    },
+    {
+        "id": 5,
+        "judul": "Laut Bercerita",
+        "penulis": "Leila S. Chudori",
+        "penerbit": "KPG",
+        "tahun": 2017,
+        "kategori": "Fiksi Sejarah",
+        "stok": 18
+    },
+    {
+        "id": 6,
+        "judul": "Cantik Itu Luka",
+        "penulis": "Eka Kurniawan",
+        "penerbit": "Gramedia",
+        "tahun": 2002,
+        "kategori": "Fiksi",
+        "stok": 7
+    },
+    {
+        "id": 7,
+        "judul": "Negeri 5 Menara",
+        "penulis": "A. Fuadi",
+        "penerbit": "Gramedia",
+        "tahun": 2009,
+        "kategori": "Fiksi",
+        "stok": 30
+    },
+    {
+        "id": 8,
+        "judul": "Pulang",
+        "penulis": "Tere Liye",
+        "penerbit": "Republika",
+        "tahun": 2015,
+        "kategori": "Novel",
+        "stok": 15
+    },
+    {
+        "id": 9,
+        "judul": "Madilog",
+        "penulis": "Tan Malaka",
+        "penerbit": "Narasi",
+        "tahun": 1943,
+        "kategori": "Sejarah",
+        "stok": 10
+    },
+    {
+        "id": 10,
+        "judul": "Rich Dad Poor Dad",
+        "penulis": "Robert T. Kiyosaki",
+        "penerbit": "Gramedia",
+        "tahun": 1997,
+        "kategori": "Edukasi",
+        "stok": 22
+    },
+    {
+        "id": 11,
+        "judul": "Sapiens",
+        "penulis": "Yuval Noah Harari",
+        "penerbit": "KPG",
+        "tahun": 2011,
+        "kategori": "Sejarah",
+        "stok": 14
+    },
+    {
+        "id": 12,
+        "judul": "Bumi",
+        "penulis": "Tere Liye",
+        "penerbit": "Gramedia",
+        "tahun": 2014,
+        "kategori": "Novel",
+        "stok": 28
+    },
+    {
+        "id": 13,
+        "judul": "Algoritma",
+        "penulis": "Rinaldi Munir",
+        "penerbit": "Informatika",
+        "tahun": 2016,
+        "kategori": "Teknologi",
+        "stok": 20
+    },
+    {
+        "id": 14,
+        "judul": "Basis Data",
+        "penulis": "Fathansyah",
+        "penerbit": "Informatika",
+        "tahun": 2018,
+        "kategori": "Teknologi",
+        "stok": 19
+    },
+    {
+        "id": 15,
+        "judul": "Jaringan Komputer",
+        "penulis": "Andrew S. Tanenbaum",
+        "penerbit": "Pearson",
+        "tahun": 2011,
+        "kategori": "Teknologi",
+        "stok": 16
+    },
+    {
+        "id": 16,
+        "judul": "Manajemen Keuangan",
+        "penulis": "Suad Husnan",
+        "penerbit": "BPFE",
+        "tahun": 2015,
+        "kategori": "Edukasi",
+        "stok": 11
+    },
+    {
+        "id": 17,
+        "judul": "Pemrograman Java",
+        "penulis": "Tim Perpustakaan",
+        "penerbit": "Polije Press",
+        "tahun": 2023,
+        "kategori": "Teknologi",
+        "stok": 5
+    },
+    {
+        "id": 18,
+        "judul": "Teknik Elektro",
+        "penulis": "Tim Perpustakaan",
+        "penerbit": "Polije Press",
+        "tahun": 2023,
+        "kategori": "Teknologi",
+        "stok": 5
+    },
+    {
+        "id": 19,
+        "judul": "Vibe Coding",
+        "penulis": "Fariz",
+        "penerbit": "Pt Fariz",
+        "tahun": 2026,
+        "kategori": "Sains",
+        "stok": 5
+    }
+]
