@@ -1,30 +1,13 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| STATE FORM TAMBAH BUKU
-|--------------------------------------------------------------------------
-*/
-$defaultTambahBuku = [
-    'judul' => '',
-    'penulis' => '',
-    'penerbit' => '',
-    'tahun' => '',
-    'tempat_terbit' => '',
-    'isbn' => '',
-    'kategori' => [],
-    'sinopsis' => '',
-    'stok' => 5,
-];
-$errorsTambahBuku = $_SESSION['tambah_buku_errors'] ?? [];
-$oldTambahBuku = array_merge($defaultTambahBuku, $_SESSION['tambah_buku_old'] ?? []);
-$kategoriList = ['Investasi', 'Sains', 'Sejarah', 'Teknologi', 'Novel', 'Psikologi'];
+require_once __DIR__ . '/../../controllers/BukuController.php';
+$bukuController = new BukuController();
+extract($bukuController->formState(), EXTR_SKIP);
 
-unset($_SESSION['tambah_buku_errors'], $_SESSION['tambah_buku_old']);
-
-// Escape output form tambah buku agar aman ditampilkan ke HTML.
-function eTambahBuku($value): string
-{
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+if (!function_exists('eTambahBuku')) {
+    function eTambahBuku($value): string
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
 }
 ?>
 
@@ -45,7 +28,7 @@ function eTambahBuku($value): string
     <?php endif; ?>
 
     <!-- Form create buku, proses submit ditangani create.php -->
-    <form method="POST" action="pages/databuku_crud/create.php" enctype="multipart/form-data">
+    <form method="POST" action="actions/buku/store.php" enctype="multipart/form-data">
         <div class="panel-card mb-3">
             <div class="panel-title">Input Data Buku</div>
 
@@ -76,7 +59,7 @@ function eTambahBuku($value): string
                             class="kategori-checkbox"
                             name="kategori[]"
                             value="<?= eTambahBuku($kategori); ?>"
-                            <?= in_array($kategori, $oldTambahBuku['kategori'], true) ? 'checked' : ''; ?>
+                            <?= (string) ($oldTambahBuku['kategori'] ?? '') === $kategori ? 'checked' : ''; ?>
                         >
                         <span class="kategori-text"><?= eTambahBuku($kategori); ?></span>
                     </label>

@@ -23,15 +23,18 @@ class Database {
             if ($this->conn->connect_error) {
                 die('gagal koneksi'.$this->conn->connect_error);
             }
+            $this->conn->set_charset('utf8mb4');
         } catch (Exception $e) {
             die($e->getMessage());
         }
-        echo 'sukses';
     }
 
     public function getConnection() {
         return $this->conn;
     }
 }
+
+// $db = new Database();
+// $conn = $db->getConnection();
 
 ?>

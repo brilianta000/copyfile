@@ -1,170 +1,7 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| KONFIGURASI DATA BUKU
-|--------------------------------------------------------------------------
-*/
-$dataFile = __DIR__ . '/data_buku.json';
-$peminjamanFile = __DIR__ . '/data_peminjaman.json';
-
-/*
-|--------------------------------------------------------------------------
-| HELPER FUNCTION DATA BUKU
-|--------------------------------------------------------------------------
-*/
-// Escape output Data Buku agar aman ditampilkan ke HTML.
-function eBuku($value): string
-{
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
-}
-
-// Menyediakan data buku awal ketika file JSON belum tersedia.
-function seedDataBuku(): array
-{
-    return [
-        ['id' => 1, 'judul' => 'Laskar Pelangi', 'penulis' => 'Andrea Hirata', 'penerbit' => 'Bentang Pustaka', 'tahun' => 2005, 'kategori' => 'Fiksi', 'stok' => 24],
-        ['id' => 2, 'judul' => 'Bumi Manusia', 'penulis' => 'Pramoedya Ananta Toer', 'penerbit' => 'Hasta Mitra', 'tahun' => 1980, 'kategori' => 'Fiksi Sejarah', 'stok' => 12],
-        ['id' => 3, 'judul' => 'Filosofi Teras', 'penulis' => 'Henry Manampiring', 'penerbit' => 'Kompas', 'tahun' => 2018, 'kategori' => 'Non-Fiksi', 'stok' => 45],
-        ['id' => 4, 'judul' => 'Atomic Habits', 'penulis' => 'James Clear', 'penerbit' => 'Gramedia', 'tahun' => 2019, 'kategori' => 'Edukasi', 'stok' => 89],
-        ['id' => 5, 'judul' => 'Laut Bercerita', 'penulis' => 'Leila S. Chudori', 'penerbit' => 'KPG', 'tahun' => 2017, 'kategori' => 'Fiksi Sejarah', 'stok' => 18],
-        ['id' => 6, 'judul' => 'Cantik Itu Luka', 'penulis' => 'Eka Kurniawan', 'penerbit' => 'Gramedia', 'tahun' => 2002, 'kategori' => 'Fiksi', 'stok' => 7],
-        ['id' => 7, 'judul' => 'Negeri 5 Menara', 'penulis' => 'A. Fuadi', 'penerbit' => 'Gramedia', 'tahun' => 2009, 'kategori' => 'Fiksi', 'stok' => 30],
-        ['id' => 8, 'judul' => 'Pulang', 'penulis' => 'Tere Liye', 'penerbit' => 'Republika', 'tahun' => 2015, 'kategori' => 'Novel', 'stok' => 15],
-        ['id' => 9, 'judul' => 'Madilog', 'penulis' => 'Tan Malaka', 'penerbit' => 'Narasi', 'tahun' => 1943, 'kategori' => 'Sejarah', 'stok' => 10],
-        ['id' => 10, 'judul' => 'Rich Dad Poor Dad', 'penulis' => 'Robert T. Kiyosaki', 'penerbit' => 'Gramedia', 'tahun' => 1997, 'kategori' => 'Edukasi', 'stok' => 22],
-        ['id' => 11, 'judul' => 'Sapiens', 'penulis' => 'Yuval Noah Harari', 'penerbit' => 'KPG', 'tahun' => 2011, 'kategori' => 'Sejarah', 'stok' => 14],
-        ['id' => 12, 'judul' => 'Bumi', 'penulis' => 'Tere Liye', 'penerbit' => 'Gramedia', 'tahun' => 2014, 'kategori' => 'Novel', 'stok' => 28],
-        ['id' => 13, 'judul' => 'Algoritma', 'penulis' => 'Rinaldi Munir', 'penerbit' => 'Informatika', 'tahun' => 2016, 'kategori' => 'Teknologi', 'stok' => 20],
-        ['id' => 14, 'judul' => 'Basis Data', 'penulis' => 'Fathansyah', 'penerbit' => 'Informatika', 'tahun' => 2018, 'kategori' => 'Teknologi', 'stok' => 19],
-        ['id' => 15, 'judul' => 'Jaringan Komputer', 'penulis' => 'Andrew S. Tanenbaum', 'penerbit' => 'Pearson', 'tahun' => 2011, 'kategori' => 'Teknologi', 'stok' => 16],
-        ['id' => 16, 'judul' => 'Manajemen Keuangan', 'penulis' => 'Suad Husnan', 'penerbit' => 'BPFE', 'tahun' => 2015, 'kategori' => 'Edukasi', 'stok' => 11],
-    ];
-}
-
-// Membaca data buku dari file JSON.
-function loadDataBuku(string $file): array
-{
-    if (!file_exists($file)) {
-        $seed = seedDataBuku();
-        saveDataBuku($file, $seed);
-        return $seed;
-    }
-
-    $data = json_decode(file_get_contents($file), true);
-    return is_array($data) ? $data : seedDataBuku();
-}
-
-// Membaca data peminjaman untuk kebutuhan sinkron stok buku.
-function loadDataPeminjamanBuku(string $file): array
-{
-    if (!file_exists($file)) {
-        return [];
-    }
-
-    $data = json_decode(file_get_contents($file), true);
-    return is_array($data) ? $data : [];
-}
-
-// Menyimpan data buku ke file JSON.
-function saveDataBuku(string $file, array $data): void
-{
-    file_put_contents($file, json_encode(array_values($data), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-}
-
-// Menghitung jumlah buku yang sedang dipinjam berdasarkan judul.
-function countDipinjamByJudul(array $dataPeminjaman, string $judul): int
-{
-    $total = 0;
-    $judul = trim($judul);
-
-    foreach ($dataPeminjaman as $item) {
-        $buku = trim((string) ($item['buku'] ?? ''));
-        $sudahKembali = !empty($item['returned_at']);
-
-        if (!$sudahKembali && $buku === $judul) {
-            $total++;
-        }
-    }
-
-    return $total;
-}
-
-// Menambahkan judul pinjaman lama ke Data Buku jika belum terdaftar.
-function ensureDataBukuHasBorrowedTitles(array $dataBuku, array $dataPeminjaman): array
-{
-    $existing = [];
-
-    foreach ($dataBuku as $item) {
-        $judul = trim((string) ($item['judul'] ?? ''));
-
-        if ($judul !== '') {
-            $existing[$judul] = true;
-        }
-    }
-
-    $fallback = [
-        'Pemrograman Web' => ['penulis' => 'Tim Perpustakaan', 'penerbit' => 'Polije Press', 'tahun' => 2023, 'kategori' => 'Teknologi', 'stok' => 5],
-        'Pemrograman Java' => ['penulis' => 'Tim Perpustakaan', 'penerbit' => 'Polije Press', 'tahun' => 2023, 'kategori' => 'Teknologi', 'stok' => 5],
-        'Teknik Elektro' => ['penulis' => 'Tim Perpustakaan', 'penerbit' => 'Polije Press', 'tahun' => 2023, 'kategori' => 'Teknologi', 'stok' => 5],
-        'Sistem Informasi' => ['penulis' => 'Tim Perpustakaan', 'penerbit' => 'Polije Press', 'tahun' => 2023, 'kategori' => 'Teknologi', 'stok' => 5],
-    ];
-
-    $maxId = 0;
-
-    foreach ($dataBuku as $item) {
-        $maxId = max($maxId, (int) ($item['id'] ?? 0));
-    }
-
-    foreach ($dataPeminjaman as $item) {
-        $judul = trim((string) ($item['buku'] ?? ''));
-
-        if ($judul === '' || isset($existing[$judul])) {
-            continue;
-        }
-
-        $detail = $fallback[$judul] ?? ['penulis' => '-', 'penerbit' => '-', 'tahun' => (int) date('Y'), 'kategori' => 'Lainnya', 'stok' => 1];
-        $dataBuku[] = array_merge(['id' => ++$maxId, 'judul' => $judul], $detail);
-        $existing[$judul] = true;
-    }
-
-    return $dataBuku;
-}
-
-// Menyediakan opsi jumlah data Data Buku per halaman.
-function getBukuPerPageOptions(): array
-{
-    return [5, 7, 10, 15, 20];
-}
-
-// Memvalidasi jumlah data Data Buku per halaman.
-function normalizeBukuPerPage($value, int $default = 7): int
-{
-    $value = (int) $value;
-    return in_array($value, getBukuPerPageOptions(), true) ? $value : $default;
-}
-
-// Membuat URL pagination dan filter Data Buku.
-function buildBukuUrl(int $page, string $search, string $kategori, int $perPage): string
-{
-    $params = ['menu' => 'databuku', 'page' => $page, 'per_page' => $perPage];
-
-    if ($search !== '') {
-        $params['q'] = $search;
-    }
-
-    if ($kategori !== 'Semua') {
-        $params['kategori'] = $kategori;
-    }
-
-    return '?' . http_build_query($params);
-}
-
-/*
-|--------------------------------------------------------------------------
-| READ DATA, FILTER, DAN PAGINATION
-|--------------------------------------------------------------------------
-*/
-require __DIR__ . '/databuku_crud/read.php';
+require_once __DIR__ . '/../../controllers/BukuController.php';
+$bukuController = new BukuController();
+extract($bukuController->index(), EXTR_SKIP);
 ?>
 
 <!-- Tampilan utama tabel Data Buku -->
@@ -236,8 +73,8 @@ require __DIR__ . '/databuku_crud/read.php';
                             <td><?= eBuku($book['tahun']); ?></td>
                             <td><?= eBuku($book['kategori']); ?></td>
                             <?php
-                            $dipinjam = countDipinjamByJudul($dataPeminjamanBuku, (string) ($book['judul'] ?? ''));
-                            $stokTersedia = max(0, (int) ($book['stok'] ?? 0) - $dipinjam);
+                            $dipinjam = (int) ($book['dipinjam'] ?? 0);
+                            $stokTersedia = (int) ($book['stok_tersedia'] ?? 0);
                             $bookPayload = $book;
                             $bookPayload['stok_tersedia'] = $stokTersedia;
                             $bookPayload['dipinjam'] = $dipinjam;
@@ -334,7 +171,7 @@ require __DIR__ . '/databuku_crud/read.php';
             <h2>Edit Data Buku</h2>
             <button type="button" class="book-modal-close js-close-book-modal" aria-label="Tutup">&times;</button>
         </div>
-        <form method="post" action="pages/databuku_crud/update.php" class="book-edit-form">
+        <form method="post" action="actions/buku/update.php" class="book-edit-form">
             <input type="hidden" name="action" value="edit_buku">
             <input type="hidden" name="id" id="editId">
             <input type="hidden" name="page" value="<?= (int) $currentPage; ?>">
