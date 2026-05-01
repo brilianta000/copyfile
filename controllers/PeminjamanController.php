@@ -43,7 +43,7 @@ class PeminjamanController
 
         [$laporanTransaksi, $laporanChanged] = Peminjaman::sinkronkanKeLaporan($dataPeminjamanSemua, $laporanTransaksi);
         $dataPeminjaman = array_values(array_filter($dataPeminjamanSemua, [Peminjaman::class, 'isAktif']));
-        $peminjamanChanged = count($dataPeminjaman) !== count($dataPeminjamanSemua);
+        $peminjamanChanged = $dataPeminjaman !== array_values($dataPeminjamanSemua);
 
         if ($laporanChanged) {
             Peminjaman::saveLaporanTransaksi(self::laporanFile(), $laporanTransaksi);
@@ -245,7 +245,13 @@ class PeminjamanController
     public static function redirectTo(array $params = []): void
     {
         $params = array_merge(['menu' => self::MENU], $params);
-        header('Location: ../../?' . http_build_query($params));
+        // __FILE__ ada di controllers/, satu level di bawah root proyek.
+        // Dari root proyek, admin/index.php bisa diakses via /admin/
+        // Gunakan path relatif dari DOCUMENT_ROOT agar kompatibel di Laragon maupun hosting.
+        $projectRoot = str_replace('\\', '/', dirname(__DIR__));
+        $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+        $basePath = rtrim(str_replace($docRoot, '', $projectRoot), '/');
+        header('Location: ' . $basePath . '/admin/?' . http_build_query($params));
         exit;
     }
 

@@ -276,6 +276,13 @@ class Peminjaman
 
         if ($returnedAt) {
             $status = 'Dikembalikan';
+            // Buku sudah dikembalikan: denda tidak relevan lagi, tampilkan Rp 0
+            return [
+                'status' => $status,
+                'terlambat' => $lateDays > 0 ? $lateDays . ' hari' : '-',
+                'denda' => 'Rp 0',
+                'late_days' => 0,
+            ];
         } elseif ($today > $tanggalKembali) {
             $status = 'Terlambat';
         } else {
