@@ -7,37 +7,38 @@ class PeminjamanController
 {
     public const MENU = 'peminjaman';
 
-    private static function dataBukuFile(): string
-    {
-        return __DIR__ . '/../admin/pages/data_buku.json';
-    }
-
     private static function getConn(): mysqli
     {
         static $conn = null;
-
         if ($conn === null) {
             $db   = new Database();
             $conn = $db->getConnection();
         }
-
         return $conn;
     }
 
     private static function model(): Peminjaman
     {
         static $model = null;
-
         if ($model === null) {
             $model = new Peminjaman(self::getConn());
         }
-
         return $model;
     }
 
-    // -------------------------------------------------------------------------
-    // INDEX — data untuk halaman datapeminjaman.php
-    // -------------------------------------------------------------------------
+    /**
+     * Ambil id_admin yang sedang login dari session.
+     * Login memakai tabel admin (id_admin disimpan di $_SESSION['id_user']).
+     */
+    private static function getIdAdmin(): int
+    {
+        self::startSession();
+        return (int) ($_SESSION['id_user'] ?? 0);
+    }
+
+    // =========================================================================
+    // INDEX — data untuk view datapeminjaman.php
+    // =========================================================================
 
     public static function index(): array
     {
@@ -49,11 +50,8 @@ class PeminjamanController
         $openPopup = !empty($flash['open_popup']);
         $errors    = $flash['errors'] ?? [];
         $oldInput  = $flash['old_input'] ?? [
-            'nim'         => '',
-            'nama'        => '',
-            'buku'        => '',
-            'tgl_pinjam'  => '',
-            'tgl_kembali' => '',
+            'kode_anggota' => '',
+            'id_buku'      => '',
         ];
 
         $search  = trim($_GET['q'] ?? '');
@@ -61,10 +59,10 @@ class PeminjamanController
 
         $dataPeminjaman = self::model()->getAktif($search);
 
-        $totalData  = count($dataPeminjaman);
-        $totalPages = max(1, (int) ceil($totalData / $perPage));
+        $totalData   = count($dataPeminjaman);
+        $totalPages  = max(1, (int) ceil($totalData / $perPage));
         $currentPage = min(max(1, (int) ($_GET['page'] ?? 1)), $totalPages);
-        $offset     = ($currentPage - 1) * $perPage;
+        $offset      = ($currentPage - 1) * $perPage;
 
         return [
             'openPopup'       => $openPopup,
@@ -81,44 +79,55 @@ class PeminjamanController
             'startDisplay'    => $totalData > 0 ? $offset + 1 : 0,
             'endDisplay'      => $totalData > 0 ? min($offset + $perPage, $totalData) : 0,
             'paginationItems' => Peminjaman::paginationItems($currentPage, $totalPages),
-            'opsiBuku'        => self::model()->getOpsiBuku(self::dataBukuFile()),
+            'opsiBuku'        => self::model()->getOpsiBuku(),
         ];
     }
 
-    // -------------------------------------------------------------------------
-    // STORE — tambah peminjaman baru → INSERT ke DB
-    // -------------------------------------------------------------------------
+    // =========================================================================
+    // STORE — tambah peminjaman baru → INSERT
+    // =========================================================================
 
     public static function store(array $post): void
     {
         self::startSession();
 
-        $nim         = trim($post['nim'] ?? '');
-        $nama        = trim($post['nama'] ?? '');
-        $buku        = trim($post['buku'] ?? '');
-        $tglPinjam   = Peminjaman::todayDate();
-        $tglKembali  = Peminjaman::defaultTanggalKembali();
+        $kodeAnggota = trim($post['kode_anggota'] ?? '');
+        $idBuku      = (int) ($post['id_buku'] ?? 0);
+        $idAdmin     = self::getIdAdmin();
         $errors      = [];
-        $oldInput    = compact('nim', 'nama', 'buku') + [
-            'tgl_pinjam'  => $tglPinjam,
-            'tgl_kembali' => $tglKembali,
-        ];
+        $oldInput    = ['kode_anggota' => $kodeAnggota, 'id_buku' => $idBuku];
 
-        if ($nim === '' || $nama === '' || $buku === '') {
+        // Validasi input wajib
+        if ($kodeAnggota === '' || $idBuku === 0) {
             $errors[] = 'Semua field wajib diisi.';
         }
 
-        if ($buku !== '' && !Peminjaman::isBukuValid(self::dataBukuFile(), $buku)) {
-            $errors[] = 'Buku yang dipilih tidak tersedia di daftar buku.';
+        // Cari anggota
+        $anggota = null;
+        if ($kodeAnggota !== '') {
+            $anggota = self::model()->findAnggotaByKode($kodeAnggota);
+            if ($anggota === null) {
+                $errors[] = 'Kode anggota tidak ditemukan atau tidak aktif.';
+            }
         }
 
-        if ($nim !== '' && self::model()->countAktifByNim($nim) >= 3) {
-            $errors[] = 'Peminjaman gagal: peminjam tersebut sudah meminjam 3 buku.';
+        // Cari buku
+        $buku = null;
+        if ($idBuku > 0) {
+            $buku = self::model()->findBuku($idBuku);
+            if ($buku === null) {
+                $errors[] = 'Buku tidak ditemukan.';
+            } elseif ((int) $buku['stok_tersedia'] < 1) {
+                $errors[] = 'Stok buku "' . htmlspecialchars($buku['judul'], ENT_QUOTES) . '" sedang habis.';
+            }
         }
 
-        if ($buku !== '' && Peminjaman::isBukuValid(self::dataBukuFile(), $buku)
-            && self::model()->getSisaStok(self::dataBukuFile(), $buku) < 1) {
-            $errors[] = 'Peminjaman gagal: stok buku "' . htmlspecialchars($buku, ENT_QUOTES) . '" sedang habis.';
+        // Cek limit 3 peminjaman aktif per anggota
+        if ($anggota !== null && empty($errors)) {
+            $aktif = self::model()->countAktifByAnggota((int) $anggota['id_anggota']);
+            if ($aktif >= 3) {
+                $errors[] = 'Anggota ini sudah meminjam 3 buku sekaligus.';
+            }
         }
 
         if (!empty($errors)) {
@@ -130,45 +139,44 @@ class PeminjamanController
             self::redirectTo(['per_page' => Peminjaman::normalizePerPage($post['per_page'] ?? 7)]);
         }
 
-        // Simpan ke database
-        self::model()->store($nim, $nama, $buku, $tglPinjam, $tglKembali);
+        $jatuhTempo = Peminjaman::defaultTanggalJatuhTempo();
+        self::model()->store(
+            (int) $anggota['id_anggota'],
+            $idBuku,
+            $idAdmin,
+            $jatuhTempo
+        );
 
         self::redirectTo(['per_page' => Peminjaman::normalizePerPage($post['per_page'] ?? 7)]);
     }
 
-    // -------------------------------------------------------------------------
-    // EXTEND — perpanjang → UPDATE tanggal_kembali & extended_at di DB
-    // -------------------------------------------------------------------------
+    // =========================================================================
+    // EXTEND — perpanjang → UPDATE tanggal_jatuh_tempo
+    // =========================================================================
 
     public static function extend(array $post): void
     {
         self::startSession();
-
         $id = (int) ($post['id'] ?? 0);
-
         self::model()->perpanjang($id);
-
         self::redirectBackToList($post);
     }
 
-    // -------------------------------------------------------------------------
-    // RETURN — kembalikan → UPDATE returned_at di DB
-    // -------------------------------------------------------------------------
+    // =========================================================================
+    // RETURN — kembalikan → UPDATE tanggal_kembali + status
+    // =========================================================================
 
     public static function returnBook(array $post): void
     {
         self::startSession();
-
         $id = (int) ($post['id'] ?? 0);
-
         self::model()->kembalikan($id);
-
         self::redirectBackToList($post);
     }
 
-    // -------------------------------------------------------------------------
+    // =========================================================================
     // Redirect helpers
-    // -------------------------------------------------------------------------
+    // =========================================================================
 
     private static function redirectBackToList(array $post): void
     {
@@ -176,12 +184,8 @@ class PeminjamanController
             'page'     => max(1, (int) ($post['page'] ?? 1)),
             'per_page' => Peminjaman::normalizePerPage($post['per_page'] ?? 7),
         ];
-
         $search = trim($post['q'] ?? '');
-        if ($search !== '') {
-            $params['q'] = $search;
-        }
-
+        if ($search !== '') $params['q'] = $search;
         self::redirectTo($params);
     }
 
@@ -197,15 +201,13 @@ class PeminjamanController
 
     private static function startSession(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            @session_start();
-        }
+        if (session_status() === PHP_SESSION_NONE) @session_start();
     }
 }
 
-// -------------------------------------------------------------------------
-// Helper functions global (dipanggil dari view datapeminjaman.php)
-// -------------------------------------------------------------------------
+// =============================================================================
+// Helper functions global (dipanggil dari view)
+// =============================================================================
 
 if (!function_exists('e')) {
     function e($value): string
@@ -219,7 +221,7 @@ if (!function_exists('todayDate')) {
 }
 
 if (!function_exists('defaultTanggalKembali')) {
-    function defaultTanggalKembali(): string { return Peminjaman::defaultTanggalKembali(); }
+    function defaultTanggalKembali(): string { return Peminjaman::defaultTanggalJatuhTempo(); }
 }
 
 if (!function_exists('getCurrentMenuPeminjaman')) {
@@ -230,8 +232,8 @@ if (!function_exists('formatTanggal')) {
     function formatTanggal($date): string
     {
         if (empty($date)) return '-';
-        $timestamp = strtotime((string) $date);
-        return $timestamp ? date('d M Y', $timestamp) : '-';
+        $ts = strtotime((string) $date);
+        return $ts ? date('d M Y', $ts) : '-';
     }
 }
 
@@ -263,11 +265,7 @@ if (!function_exists('getPeminjamanPerPageOptions')) {
 if (!function_exists('buildPageUrl')) {
     function buildPageUrl(int $page, string $search, int $perPage): string
     {
-        $params = [
-            'menu'     => getCurrentMenuPeminjaman(),
-            'page'     => $page,
-            'per_page' => $perPage,
-        ];
+        $params = ['menu' => getCurrentMenuPeminjaman(), 'page' => $page, 'per_page' => $perPage];
         if ($search !== '') $params['q'] = $search;
         return '?' . http_build_query($params);
     }
