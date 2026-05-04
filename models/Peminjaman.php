@@ -2,10 +2,16 @@
 
 class Peminjaman
 {
-    public static function createId(): string
+    private mysqli $conn;
+
+    public function __construct(mysqli $conn)
     {
-        return uniqid('pjm_', true);
+        $this->conn = $conn;
     }
+
+    // -------------------------------------------------------------------------
+    // Helper tanggal
+    // -------------------------------------------------------------------------
 
     public static function todayDate(): string
     {
@@ -17,82 +23,156 @@ class Peminjaman
         return date('Y-m-d', strtotime('+7 days'));
     }
 
-    public static function seed(): array
+    public static function tambahTujuhHari(string $tanggal): string
     {
-        $today = new DateTimeImmutable('today');
-        $rel = function (string $modifier) use ($today): string {
-            return $today->modify($modifier)->format('Y-m-d');
-        };
-
-        return [
-            ['id' => self::createId(), 'nim' => '123456', 'nama' => 'Fajar', 'buku' => 'Pemrograman Web', 'tanggal_pinjam' => $rel('-3 days'), 'tanggal_kembali' => $rel('+6 days'), 'returned_at' => null],
-            ['id' => self::createId(), 'nim' => '123457', 'nama' => 'Dina', 'buku' => 'Basis Data', 'tanggal_pinjam' => $rel('-6 days'), 'tanggal_kembali' => $rel('+2 days'), 'returned_at' => null],
-            ['id' => self::createId(), 'nim' => '123458', 'nama' => 'Budi', 'buku' => 'Jaringan Komputer', 'tanggal_pinjam' => $rel('-12 days'), 'tanggal_kembali' => $rel('-2 days'), 'returned_at' => null],
-            ['id' => self::createId(), 'nim' => '123459', 'nama' => 'Andi', 'buku' => 'Sistem Informasi', 'tanggal_pinjam' => $rel('-18 days'), 'tanggal_kembali' => $rel('-10 days'), 'returned_at' => $rel('-8 days')],
-            ['id' => self::createId(), 'nim' => '123460', 'nama' => 'Rani', 'buku' => 'Pemrograman Java', 'tanggal_pinjam' => $rel('-24 days'), 'tanggal_kembali' => $rel('-16 days'), 'returned_at' => $rel('-16 days')],
-            ['id' => self::createId(), 'nim' => '123461', 'nama' => 'Eko', 'buku' => 'Teknik Elektro', 'tanggal_pinjam' => $rel('-14 days'), 'tanggal_kembali' => $rel('-3 days'), 'returned_at' => null],
-            ['id' => self::createId(), 'nim' => '123462', 'nama' => 'Widya', 'buku' => 'Manajemen Keuangan', 'tanggal_pinjam' => $rel('-4 days'), 'tanggal_kembali' => $rel('+5 days'), 'returned_at' => null],
-        ];
-    }
-
-    public static function ensureDirectoryExists(string $file): void
-    {
-        $dir = dirname($file);
-
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
+        try {
+            return (new DateTimeImmutable($tanggal))->modify('+7 days')->format('Y-m-d');
+        } catch (Exception $e) {
+            return date('Y-m-d', strtotime('+7 days'));
         }
     }
 
-    public static function readJsonArray(string $file, array $fallback = []): array
+    // -------------------------------------------------------------------------
+    // READ
+    // -------------------------------------------------------------------------
+
+    public function getAktif(string $search = ''): array
     {
-        if (!file_exists($file)) {
-            return $fallback;
+        if ($search !== '') {
+            $like = '%' . $search . '%';
+            $stmt = $this->conn->prepare(
+                'SELECT * FROM peminjaman
+                 WHERE returned_at IS NULL
+                   AND (nim LIKE ? OR nama LIKE ? OR buku LIKE ?)
+                 ORDER BY created_at DESC'
+            );
+            $stmt->bind_param('sss', $like, $like, $like);
+        } else {
+            $stmt = $this->conn->prepare(
+                'SELECT * FROM peminjaman
+                 WHERE returned_at IS NULL
+                 ORDER BY created_at DESC'
+            );
         }
 
-        $data = json_decode((string) file_get_contents($file), true);
-        return is_array($data) ? $data : $fallback;
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public static function writeJsonArray(string $file, array $data): void
+    public function countAktifByNim(string $nim): int
     {
-        self::ensureDirectoryExists($file);
-        file_put_contents($file, json_encode(array_values($data), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+        $stmt = $this->conn->prepare(
+            'SELECT COUNT(*) FROM peminjaman WHERE nim = ? AND returned_at IS NULL'
+        );
+        $stmt->bind_param('s', $nim);
+        $stmt->execute();
+        return (int) $stmt->get_result()->fetch_row()[0];
     }
 
-    public static function load(string $file): array
+    public function countAktifByBuku(string $buku): int
     {
-        if (!file_exists($file)) {
-            $defaultData = self::seed();
-            self::save($file, $defaultData);
-            return $defaultData;
+        $stmt = $this->conn->prepare(
+            'SELECT COUNT(*) FROM peminjaman WHERE buku = ? AND returned_at IS NULL'
+        );
+        $stmt->bind_param('s', $buku);
+        $stmt->execute();
+        return (int) $stmt->get_result()->fetch_row()[0];
+    }
+
+    public function findById(int $id): ?array
+    {
+        $stmt = $this->conn->prepare('SELECT * FROM peminjaman WHERE id = ?');
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row ?: null;
+    }
+
+    // -------------------------------------------------------------------------
+    // CREATE
+    // -------------------------------------------------------------------------
+
+    public function store(
+        string $nim,
+        string $nama,
+        string $buku,
+        string $tanggalPinjam,
+        string $tanggalKembali
+    ): int {
+        $stmt = $this->conn->prepare(
+            'INSERT INTO peminjaman (nim, nama, buku, tanggal_pinjam, tanggal_kembali)
+             VALUES (?, ?, ?, ?, ?)'
+        );
+        $stmt->bind_param('sssss', $nim, $nama, $buku, $tanggalPinjam, $tanggalKembali);
+        $stmt->execute();
+        return (int) $this->conn->insert_id;
+    }
+
+    // -------------------------------------------------------------------------
+    // UPDATE: Perpanjang
+    // -------------------------------------------------------------------------
+
+    public function perpanjang(int $id): bool
+    {
+        $item = $this->findById($id);
+
+        if ($item === null) {
+            return false;
         }
 
-        return self::readJsonArray($file, self::seed());
+        if (!empty($item['returned_at']) || !empty($item['extended_at'])) {
+            return false;
+        }
+
+        $tanggalBaru = self::tambahTujuhHari((string) $item['tanggal_kembali']);
+        $today       = self::todayDate();
+
+        $stmt = $this->conn->prepare(
+            'UPDATE peminjaman
+             SET tanggal_kembali = ?, extended_at = ?
+             WHERE id = ? AND returned_at IS NULL AND extended_at IS NULL'
+        );
+        $stmt->bind_param('ssi', $tanggalBaru, $today, $id);
+        $stmt->execute();
+
+        return $stmt->affected_rows > 0;
     }
 
-    public static function save(string $file, array $data): void
+    // -------------------------------------------------------------------------
+    // UPDATE: Kembalikan
+    // -------------------------------------------------------------------------
+
+    public function kembalikan(int $id): bool
     {
-        self::writeJsonArray($file, $data);
+        $today = self::todayDate();
+
+        $stmt = $this->conn->prepare(
+            'UPDATE peminjaman
+             SET returned_at = ?
+             WHERE id = ? AND returned_at IS NULL'
+        );
+        $stmt->bind_param('si', $today, $id);
+        $stmt->execute();
+
+        return $stmt->affected_rows > 0;
     }
 
-    public static function loadLaporanTransaksi(string $file): array
-    {
-        return self::readJsonArray($file);
-    }
-
-    public static function saveLaporanTransaksi(string $file, array $data): void
-    {
-        self::writeJsonArray($file, $data);
-    }
+    // -------------------------------------------------------------------------
+    // Stok buku (tetap dari JSON karena buku belum migrasi ke DB)
+    // -------------------------------------------------------------------------
 
     public static function getDaftarBuku(string $dataBukuFile): array
     {
         $daftarBuku = [];
 
-        foreach (self::readJsonArray($dataBukuFile) as $item) {
-            $judul = trim((string) ($item['judul'] ?? ''));
+        if (!file_exists($dataBukuFile)) {
+            return $daftarBuku;
+        }
 
+        $data = json_decode((string) file_get_contents($dataBukuFile), true);
+
+        foreach ((array) $data as $item) {
+            $judul = trim((string) ($item['judul'] ?? ''));
             if ($judul !== '') {
                 $daftarBuku[$judul] = max(0, (int) ($item['stok'] ?? 0));
             }
@@ -108,74 +188,24 @@ class Peminjaman
 
     public static function getStokBuku(string $dataBukuFile, string $buku): int
     {
-        $daftarBuku = self::getDaftarBuku($dataBukuFile);
-        return $daftarBuku[$buku] ?? 0;
+        return self::getDaftarBuku($dataBukuFile)[$buku] ?? 0;
     }
 
-    public static function isAktif(array $item): bool
+    public function getSisaStok(string $dataBukuFile, string $buku): int
     {
-        return empty($item['returned_at']);
+        $stokTotal = self::getStokBuku($dataBukuFile, $buku);
+        $dipinjam  = $this->countAktifByBuku($buku);
+        return max(0, $stokTotal - $dipinjam);
     }
 
-    public static function canPerpanjang(array $item): bool
-    {
-        return self::isAktif($item) && empty($item['extended_at']);
-    }
-
-    public static function tambahTujuhHari(string $tanggal): string
-    {
-        try {
-            return (new DateTimeImmutable($tanggal))->modify('+7 days')->format('Y-m-d');
-        } catch (Exception $e) {
-            return date('Y-m-d', strtotime('+7 days'));
-        }
-    }
-
-    public static function countAktifByNim(array $data, string $nim): int
-    {
-        $total = 0;
-        $nim = trim($nim);
-
-        foreach ($data as $item) {
-            if (self::isAktif($item) && trim((string) ($item['nim'] ?? '')) === $nim) {
-                $total++;
-            }
-        }
-
-        return $total;
-    }
-
-    public static function countAktifByBuku(array $data, string $buku): int
-    {
-        $total = 0;
-        $buku = trim($buku);
-
-        foreach ($data as $item) {
-            if (self::isAktif($item) && trim((string) ($item['buku'] ?? '')) === $buku) {
-                $total++;
-            }
-        }
-
-        return $total;
-    }
-
-    public static function getSisaStokBuku(string $dataBukuFile, array $data, string $buku): int
-    {
-        if (!self::isBukuValid($dataBukuFile, $buku)) {
-            return 0;
-        }
-
-        return max(0, self::getStokBuku($dataBukuFile, $buku) - self::countAktifByBuku($data, $buku));
-    }
-
-    public static function getOpsiBuku(string $dataBukuFile, array $dataPeminjaman): array
+    public function getOpsiBuku(string $dataBukuFile): array
     {
         $opsi = [];
 
         foreach (self::getDaftarBuku($dataBukuFile) as $judul => $stokTotal) {
             $opsi[] = [
-                'judul' => $judul,
-                'stok' => self::getSisaStokBuku($dataBukuFile, $dataPeminjaman, $judul),
+                'judul'      => $judul,
+                'stok'       => $this->getSisaStok($dataBukuFile, $judul),
                 'stok_total' => $stokTotal,
             ];
         }
@@ -183,119 +213,54 @@ class Peminjaman
         return $opsi;
     }
 
-    public static function nextLaporanId(array $data): int
+    // -------------------------------------------------------------------------
+    // Helper status & meta
+    // -------------------------------------------------------------------------
+
+    public static function canPerpanjang(array $item): bool
     {
-        $max = 0;
-
-        foreach ($data as $item) {
-            $max = max($max, (int) ($item['id'] ?? 0));
-        }
-
-        return $max + 1;
-    }
-
-    public static function buildStatusLaporan(string $jatuhTempo, string $tglKembali = ''): string
-    {
-        if ($tglKembali !== '') {
-            return 'Dikembalikan';
-        }
-
-        return strtotime(self::todayDate()) > strtotime($jatuhTempo) ? 'Terlambat' : 'Belum Kembali';
-    }
-
-    public static function cariIndexLaporanBySourceId(array $laporanData, string $sourceId): ?int
-    {
-        foreach ($laporanData as $index => $item) {
-            if (($item['source_id'] ?? '') === $sourceId) {
-                return $index;
-            }
-        }
-
-        return null;
-    }
-
-    public static function buatItemLaporan(array $item, ?int $laporanId = null): array
-    {
-        $tglKembaliReal = !empty($item['returned_at']) ? $item['returned_at'] : '';
-
-        return [
-            'id' => $laporanId,
-            'source_id' => $item['id'],
-            'tanggal' => $item['tanggal_pinjam'],
-            'peminjam' => $item['nama'],
-            'judul_buku' => $item['buku'],
-            'tgl_pinjam' => $item['tanggal_pinjam'],
-            'tgl_jatuh_tempo' => $item['tanggal_kembali'],
-            'tgl_kembali' => $tglKembaliReal,
-            'status' => self::buildStatusLaporan($item['tanggal_kembali'], $tglKembaliReal),
-        ];
-    }
-
-    public static function sinkronkanKeLaporan(array $dataPeminjaman, array $laporanData): array
-    {
-        $changed = false;
-
-        foreach ($dataPeminjaman as $item) {
-            if (empty($item['id'])) {
-                continue;
-            }
-
-            $index = self::cariIndexLaporanBySourceId($laporanData, $item['id']);
-            $laporanItem = self::buatItemLaporan($item);
-
-            if ($index === null) {
-                $laporanItem['id'] = self::nextLaporanId($laporanData);
-                array_unshift($laporanData, $laporanItem);
-                $changed = true;
-                continue;
-            }
-
-            $laporanItem['id'] = $laporanData[$index]['id'] ?? self::nextLaporanId($laporanData);
-
-            if ($laporanData[$index] != $laporanItem) {
-                $laporanData[$index] = $laporanItem;
-                $changed = true;
-            }
-        }
-
-        return [$laporanData, $changed];
+        return empty($item['returned_at']) && empty($item['extended_at']);
     }
 
     public static function hitungMeta(array $item): array
     {
         try {
-            $today = new DateTimeImmutable('today');
+            $today          = new DateTimeImmutable('today');
             $tanggalKembali = new DateTimeImmutable($item['tanggal_kembali']);
-            $returnedAt = !empty($item['returned_at']) ? new DateTimeImmutable($item['returned_at']) : null;
+            $returnedAt     = !empty($item['returned_at'])
+                ? new DateTimeImmutable($item['returned_at'])
+                : null;
         } catch (Exception $e) {
             return ['status' => 'Dipinjam', 'terlambat' => '-', 'denda' => 'Rp 0', 'late_days' => 0];
         }
 
         $pembanding = $returnedAt ?: $today;
-        $lateDays = $pembanding > $tanggalKembali ? (int) $tanggalKembali->diff($pembanding)->format('%a') : 0;
+        $lateDays   = $pembanding > $tanggalKembali
+            ? (int) $tanggalKembali->diff($pembanding)->format('%a')
+            : 0;
 
         if ($returnedAt) {
-            $status = 'Dikembalikan';
-            // Buku sudah dikembalikan: denda tidak relevan lagi, tampilkan Rp 0
             return [
-                'status' => $status,
+                'status'    => 'Dikembalikan',
                 'terlambat' => $lateDays > 0 ? $lateDays . ' hari' : '-',
-                'denda' => 'Rp 0',
+                'denda'     => 'Rp 0',
                 'late_days' => 0,
             ];
-        } elseif ($today > $tanggalKembali) {
-            $status = 'Terlambat';
-        } else {
-            $status = 'Dipinjam';
         }
 
+        $status = $today > $tanggalKembali ? 'Terlambat' : 'Dipinjam';
+
         return [
-            'status' => $status,
+            'status'    => $status,
             'terlambat' => $lateDays > 0 ? $lateDays . ' hari' : '-',
-            'denda' => 'Rp ' . number_format($lateDays * 500, 0, ',', '.'),
+            'denda'     => 'Rp ' . number_format($lateDays * 500, 0, ',', '.'),
             'late_days' => $lateDays,
         ];
     }
+
+    // -------------------------------------------------------------------------
+    // Pagination
+    // -------------------------------------------------------------------------
 
     public static function perPageOptions(): array
     {
@@ -310,18 +275,18 @@ class Peminjaman
 
     public static function paginationItems(int $currentPage, int $totalPages): array
     {
-        $items = [];
+        $items       = [];
         $lastWasDots = false;
 
         for ($i = 1; $i <= $totalPages; $i++) {
             if ($i === 1 || $i === $totalPages || abs($i - $currentPage) <= 1) {
-                $items[] = $i;
+                $items[]     = $i;
                 $lastWasDots = false;
                 continue;
             }
 
             if (!$lastWasDots) {
-                $items[] = '...';
+                $items[]     = '...';
                 $lastWasDots = true;
             }
         }

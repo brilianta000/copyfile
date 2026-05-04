@@ -1,25 +1,43 @@
 <?php
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Peminjaman.php';
 
 class PeminjamanController
 {
     public const MENU = 'peminjaman';
 
-    public static function dataFile(): string
-    {
-        return __DIR__ . '/../admin/pages/data_peminjaman.json';
-    }
-
-    public static function laporanFile(): string
-    {
-        return __DIR__ . '/../admin/pages/data_laporan_transaksi.json';
-    }
-
-    public static function dataBukuFile(): string
+    private static function dataBukuFile(): string
     {
         return __DIR__ . '/../admin/pages/data_buku.json';
     }
+
+    private static function getConn(): mysqli
+    {
+        static $conn = null;
+
+        if ($conn === null) {
+            $db   = new Database();
+            $conn = $db->getConnection();
+        }
+
+        return $conn;
+    }
+
+    private static function model(): Peminjaman
+    {
+        static $model = null;
+
+        if ($model === null) {
+            $model = new Peminjaman(self::getConn());
+        }
+
+        return $model;
+    }
+
+    // -------------------------------------------------------------------------
+    // INDEX — data untuk halaman datapeminjaman.php
+    // -------------------------------------------------------------------------
 
     public static function index(): array
     {
@@ -29,83 +47,60 @@ class PeminjamanController
         unset($_SESSION['peminjaman_flash']);
 
         $openPopup = !empty($flash['open_popup']);
-        $errors = $flash['errors'] ?? [];
-        $oldInput = $flash['old_input'] ?? [
-            'nim' => '',
-            'nama' => '',
-            'buku' => '',
-            'tgl_pinjam' => '',
+        $errors    = $flash['errors'] ?? [];
+        $oldInput  = $flash['old_input'] ?? [
+            'nim'         => '',
+            'nama'        => '',
+            'buku'        => '',
+            'tgl_pinjam'  => '',
             'tgl_kembali' => '',
         ];
 
-        $dataPeminjamanSemua = Peminjaman::load(self::dataFile());
-        $laporanTransaksi = Peminjaman::loadLaporanTransaksi(self::laporanFile());
-
-        [$laporanTransaksi, $laporanChanged] = Peminjaman::sinkronkanKeLaporan($dataPeminjamanSemua, $laporanTransaksi);
-        $dataPeminjaman = array_values(array_filter($dataPeminjamanSemua, [Peminjaman::class, 'isAktif']));
-        $peminjamanChanged = $dataPeminjaman !== array_values($dataPeminjamanSemua);
-
-        if ($laporanChanged) {
-            Peminjaman::saveLaporanTransaksi(self::laporanFile(), $laporanTransaksi);
-        }
-
-        if ($peminjamanChanged) {
-            Peminjaman::save(self::dataFile(), $dataPeminjaman);
-        }
-
-        $search = trim($_GET['q'] ?? '');
+        $search  = trim($_GET['q'] ?? '');
         $perPage = Peminjaman::normalizePerPage($_GET['per_page'] ?? 7);
-        $filteredData = array_values(array_filter($dataPeminjaman, function (array $item) use ($search): bool {
-            if ($search === '') {
-                return true;
-            }
 
-            return stripos((string) ($item['nim'] ?? ''), $search) !== false
-                || stripos((string) ($item['nama'] ?? ''), $search) !== false
-                || stripos((string) ($item['buku'] ?? ''), $search) !== false;
-        }));
+        $dataPeminjaman = self::model()->getAktif($search);
 
-        $totalData = count($filteredData);
+        $totalData  = count($dataPeminjaman);
         $totalPages = max(1, (int) ceil($totalData / $perPage));
         $currentPage = min(max(1, (int) ($_GET['page'] ?? 1)), $totalPages);
-        $offset = ($currentPage - 1) * $perPage;
+        $offset     = ($currentPage - 1) * $perPage;
 
         return [
-            'openPopup' => $openPopup,
-            'errors' => $errors,
-            'oldInput' => $oldInput,
-            'dataPeminjaman' => $dataPeminjaman,
-            'search' => $search,
-            'perPage' => $perPage,
-            'filteredData' => $filteredData,
-            'totalData' => $totalData,
-            'totalPages' => $totalPages,
-            'currentPage' => $currentPage,
-            'offset' => $offset,
-            'pageData' => array_slice($filteredData, $offset, $perPage),
-            'startDisplay' => $totalData > 0 ? $offset + 1 : 0,
-            'endDisplay' => $totalData > 0 ? min($offset + $perPage, $totalData) : 0,
+            'openPopup'       => $openPopup,
+            'errors'          => $errors,
+            'oldInput'        => $oldInput,
+            'dataPeminjaman'  => $dataPeminjaman,
+            'search'          => $search,
+            'perPage'         => $perPage,
+            'totalData'       => $totalData,
+            'totalPages'      => $totalPages,
+            'currentPage'     => $currentPage,
+            'offset'          => $offset,
+            'pageData'        => array_slice($dataPeminjaman, $offset, $perPage),
+            'startDisplay'    => $totalData > 0 ? $offset + 1 : 0,
+            'endDisplay'      => $totalData > 0 ? min($offset + $perPage, $totalData) : 0,
             'paginationItems' => Peminjaman::paginationItems($currentPage, $totalPages),
-            'opsiBuku' => Peminjaman::getOpsiBuku(self::dataBukuFile(), $dataPeminjaman),
+            'opsiBuku'        => self::model()->getOpsiBuku(self::dataBukuFile()),
         ];
     }
+
+    // -------------------------------------------------------------------------
+    // STORE — tambah peminjaman baru → INSERT ke DB
+    // -------------------------------------------------------------------------
 
     public static function store(array $post): void
     {
         self::startSession();
 
-        $dataPeminjaman = array_values(array_filter(Peminjaman::load(self::dataFile()), [Peminjaman::class, 'isAktif']));
-        $nim = trim($post['nim'] ?? '');
-        $nama = trim($post['nama'] ?? '');
-        $buku = trim($post['buku'] ?? '');
-        $tglPinjam = Peminjaman::todayDate();
-        $tglKembali = Peminjaman::defaultTanggalKembali();
-        $errors = [];
-        $oldInput = [
-            'nim' => $nim,
-            'nama' => $nama,
-            'buku' => $buku,
-            'tgl_pinjam' => $tglPinjam,
+        $nim         = trim($post['nim'] ?? '');
+        $nama        = trim($post['nama'] ?? '');
+        $buku        = trim($post['buku'] ?? '');
+        $tglPinjam   = Peminjaman::todayDate();
+        $tglKembali  = Peminjaman::defaultTanggalKembali();
+        $errors      = [];
+        $oldInput    = compact('nim', 'nama', 'buku') + [
+            'tgl_pinjam'  => $tglPinjam,
             'tgl_kembali' => $tglKembali,
         ];
 
@@ -117,140 +112,85 @@ class PeminjamanController
             $errors[] = 'Buku yang dipilih tidak tersedia di daftar buku.';
         }
 
-        if ($nim !== '' && Peminjaman::countAktifByNim($dataPeminjaman, $nim) >= 3) {
-            $errors[] = 'Peminjaman gagal karena peminjam tersebut sedang meminjam 3 buku.';
+        if ($nim !== '' && self::model()->countAktifByNim($nim) >= 3) {
+            $errors[] = 'Peminjaman gagal: peminjam tersebut sudah meminjam 3 buku.';
         }
 
         if ($buku !== '' && Peminjaman::isBukuValid(self::dataBukuFile(), $buku)
-            && Peminjaman::getSisaStokBuku(self::dataBukuFile(), $dataPeminjaman, $buku) < 1) {
-            $errors[] = 'Peminjaman gagal karena stok buku "' . e($buku) . '" sedang habis.';
+            && self::model()->getSisaStok(self::dataBukuFile(), $buku) < 1) {
+            $errors[] = 'Peminjaman gagal: stok buku "' . htmlspecialchars($buku, ENT_QUOTES) . '" sedang habis.';
         }
 
         if (!empty($errors)) {
             $_SESSION['peminjaman_flash'] = [
                 'open_popup' => true,
-                'errors' => $errors,
-                'old_input' => $oldInput,
+                'errors'     => $errors,
+                'old_input'  => $oldInput,
             ];
             self::redirectTo(['per_page' => Peminjaman::normalizePerPage($post['per_page'] ?? 7)]);
         }
 
-        $newData = [
-            'id' => Peminjaman::createId(),
-            'nim' => $nim,
-            'nama' => $nama,
-            'buku' => $buku,
-            'tanggal_pinjam' => $tglPinjam,
-            'tanggal_kembali' => $tglKembali,
-            'returned_at' => null,
-        ];
-
-        array_unshift($dataPeminjaman, $newData);
-        Peminjaman::save(self::dataFile(), $dataPeminjaman);
-
-        $laporanTransaksi = Peminjaman::loadLaporanTransaksi(self::laporanFile());
-        array_unshift($laporanTransaksi, Peminjaman::buatItemLaporan($newData, Peminjaman::nextLaporanId($laporanTransaksi)));
-        Peminjaman::saveLaporanTransaksi(self::laporanFile(), $laporanTransaksi);
+        // Simpan ke database
+        self::model()->store($nim, $nama, $buku, $tglPinjam, $tglKembali);
 
         self::redirectTo(['per_page' => Peminjaman::normalizePerPage($post['per_page'] ?? 7)]);
     }
 
+    // -------------------------------------------------------------------------
+    // EXTEND — perpanjang → UPDATE tanggal_kembali & extended_at di DB
+    // -------------------------------------------------------------------------
+
     public static function extend(array $post): void
     {
-        $dataPeminjaman = array_values(array_filter(Peminjaman::load(self::dataFile()), [Peminjaman::class, 'isAktif']));
-        $laporanTransaksi = Peminjaman::loadLaporanTransaksi(self::laporanFile());
-        $id = $post['id'] ?? '';
-        $dataBerubah = false;
+        self::startSession();
 
-        foreach ($dataPeminjaman as $index => $item) {
-            if (($item['id'] ?? '') !== $id || !Peminjaman::canPerpanjang($item)) {
-                continue;
-            }
+        $id = (int) ($post['id'] ?? 0);
 
-            $item['tanggal_kembali'] = Peminjaman::tambahTujuhHari((string) ($item['tanggal_kembali'] ?? Peminjaman::todayDate()));
-            $item['extended_at'] = Peminjaman::todayDate();
-            $dataPeminjaman[$index] = $item;
-            self::upsertLaporan($laporanTransaksi, $item);
-            $dataBerubah = true;
-            break;
-        }
-
-        if ($dataBerubah) {
-            Peminjaman::save(self::dataFile(), $dataPeminjaman);
-            Peminjaman::saveLaporanTransaksi(self::laporanFile(), $laporanTransaksi);
-        }
+        self::model()->perpanjang($id);
 
         self::redirectBackToList($post);
     }
+
+    // -------------------------------------------------------------------------
+    // RETURN — kembalikan → UPDATE returned_at di DB
+    // -------------------------------------------------------------------------
 
     public static function returnBook(array $post): void
     {
-        $dataPeminjaman = array_values(array_filter(Peminjaman::load(self::dataFile()), [Peminjaman::class, 'isAktif']));
-        $laporanTransaksi = Peminjaman::loadLaporanTransaksi(self::laporanFile());
-        $id = $post['id'] ?? '';
-        $dataBerubah = false;
+        self::startSession();
 
-        foreach ($dataPeminjaman as $index => $item) {
-            if (($item['id'] ?? '') !== $id) {
-                continue;
-            }
+        $id = (int) ($post['id'] ?? 0);
 
-            $item['returned_at'] = Peminjaman::todayDate();
-            self::upsertLaporan($laporanTransaksi, $item);
-            unset($dataPeminjaman[$index]);
-            $dataBerubah = true;
-            break;
-        }
-
-        if ($dataBerubah) {
-            Peminjaman::save(self::dataFile(), array_values($dataPeminjaman));
-            Peminjaman::saveLaporanTransaksi(self::laporanFile(), $laporanTransaksi);
-        }
+        self::model()->kembalikan($id);
 
         self::redirectBackToList($post);
     }
 
-    private static function upsertLaporan(array &$laporanTransaksi, array $item): void
-    {
-        $laporanIndex = Peminjaman::cariIndexLaporanBySourceId($laporanTransaksi, $item['id']);
-        $laporanItem = Peminjaman::buatItemLaporan(
-            $item,
-            $laporanIndex !== null
-                ? ($laporanTransaksi[$laporanIndex]['id'] ?? Peminjaman::nextLaporanId($laporanTransaksi))
-                : Peminjaman::nextLaporanId($laporanTransaksi)
-        );
-
-        if ($laporanIndex === null) {
-            array_unshift($laporanTransaksi, $laporanItem);
-        } else {
-            $laporanTransaksi[$laporanIndex] = $laporanItem;
-        }
-    }
+    // -------------------------------------------------------------------------
+    // Redirect helpers
+    // -------------------------------------------------------------------------
 
     private static function redirectBackToList(array $post): void
     {
-        $redirectParams = [
-            'page' => max(1, (int) ($post['page'] ?? 1)),
+        $params = [
+            'page'     => max(1, (int) ($post['page'] ?? 1)),
             'per_page' => Peminjaman::normalizePerPage($post['per_page'] ?? 7),
         ];
 
         $search = trim($post['q'] ?? '');
         if ($search !== '') {
-            $redirectParams['q'] = $search;
+            $params['q'] = $search;
         }
 
-        self::redirectTo($redirectParams);
+        self::redirectTo($params);
     }
 
     public static function redirectTo(array $params = []): void
     {
-        $params = array_merge(['menu' => self::MENU], $params);
-        // __FILE__ ada di controllers/, satu level di bawah root proyek.
-        // Dari root proyek, admin/index.php bisa diakses via /admin/
-        // Gunakan path relatif dari DOCUMENT_ROOT agar kompatibel di Laragon maupun hosting.
+        $params      = array_merge(['menu' => self::MENU], $params);
         $projectRoot = str_replace('\\', '/', dirname(__DIR__));
-        $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
-        $basePath = rtrim(str_replace($docRoot, '', $projectRoot), '/');
+        $docRoot     = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+        $basePath    = rtrim(str_replace($docRoot, '', $projectRoot), '/');
         header('Location: ' . $basePath . '/admin/?' . http_build_query($params));
         exit;
     }
@@ -263,6 +203,10 @@ class PeminjamanController
     }
 }
 
+// -------------------------------------------------------------------------
+// Helper functions global (dipanggil dari view datapeminjaman.php)
+// -------------------------------------------------------------------------
+
 if (!function_exists('e')) {
     function e($value): string
     {
@@ -271,33 +215,21 @@ if (!function_exists('e')) {
 }
 
 if (!function_exists('todayDate')) {
-    function todayDate(): string
-    {
-        return Peminjaman::todayDate();
-    }
+    function todayDate(): string { return Peminjaman::todayDate(); }
 }
 
 if (!function_exists('defaultTanggalKembali')) {
-    function defaultTanggalKembali(): string
-    {
-        return Peminjaman::defaultTanggalKembali();
-    }
+    function defaultTanggalKembali(): string { return Peminjaman::defaultTanggalKembali(); }
 }
 
 if (!function_exists('getCurrentMenuPeminjaman')) {
-    function getCurrentMenuPeminjaman(): string
-    {
-        return PeminjamanController::MENU;
-    }
+    function getCurrentMenuPeminjaman(): string { return PeminjamanController::MENU; }
 }
 
 if (!function_exists('formatTanggal')) {
     function formatTanggal($date): string
     {
-        if (empty($date)) {
-            return '-';
-        }
-
+        if (empty($date)) return '-';
         $timestamp = strtotime((string) $date);
         return $timestamp ? date('d M Y', $timestamp) : '-';
     }
@@ -325,25 +257,18 @@ if (!function_exists('tambahTujuhHariPeminjaman')) {
 }
 
 if (!function_exists('getPeminjamanPerPageOptions')) {
-    function getPeminjamanPerPageOptions(): array
-    {
-        return Peminjaman::perPageOptions();
-    }
+    function getPeminjamanPerPageOptions(): array { return Peminjaman::perPageOptions(); }
 }
 
 if (!function_exists('buildPageUrl')) {
     function buildPageUrl(int $page, string $search, int $perPage): string
     {
         $params = [
-            'menu' => getCurrentMenuPeminjaman(),
-            'page' => $page,
+            'menu'     => getCurrentMenuPeminjaman(),
+            'page'     => $page,
             'per_page' => $perPage,
         ];
-
-        if ($search !== '') {
-            $params['q'] = $search;
-        }
-
+        if ($search !== '') $params['q'] = $search;
         return '?' . http_build_query($params);
     }
 }
