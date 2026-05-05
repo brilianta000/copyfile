@@ -120,13 +120,7 @@ class Reservasi
     public function expireKadaluarsa(): void
     {
         $today = date('Y-m-d');
-        $this->conn->prepare(
-            'UPDATE reservasi
-             SET status_reservasi = "expired"
-             WHERE tanggal_kadaluarsa < ? AND status_reservasi IN ("pending", "confirmed")'
-        )->execute() || null; // bind tidak dibutuhkan karena ini query langsung
-        // Gunakan prepared statement yang benar:
-        $stmt = $this->conn->prepare(
+        $stmt  = $this->conn->prepare(
             'UPDATE reservasi
              SET status_reservasi = "expired"
              WHERE tanggal_kadaluarsa < ? AND status_reservasi IN ("pending","confirmed")'
