@@ -43,7 +43,13 @@ $allowedMenus = [
         'styles' => [
             '../public/css/dash.css'
         ]
-    ]
+    ],
+    'reservasi' => [
+        'file'   => 'pages/reservasi.php',
+        'styles' => [
+            '../public/css/reservasi.css',
+        ],
+    ],
 ];
 
 // Fallback menu jika query menu tidak dikenal.

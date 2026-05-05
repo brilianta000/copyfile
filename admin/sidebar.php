@@ -30,5 +30,10 @@
             <i class="bi bi-file-earmark-text"></i>
             <span>LAPORAN</span>
         </a>
+
+        <a href="?menu=reservasi" class="sidebar-subitem <?= ($currentMenu === 'reservasi') ? 'active' : ''; ?>">
+            <i class="bi bi-bookmark-check"></i>
+            <span>RESERVASI</span>
+        </a>
     </nav>
 </aside>
