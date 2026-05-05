@@ -49,10 +49,10 @@ extract(PeminjamanController::index(), EXTR_SKIP);
                 <?php if (!empty($pageData)): ?>
                     <?php foreach ($pageData as $item): ?>
                         <?php
-                        $meta               = hitungMetaPeminjaman($item);
-                        $statusClass        = 'status-dipinjam';
-                        $jatuhTempoLama     = (string) ($item['tanggal_jatuh_tempo'] ?? '');
-                        $jatuhTempoBaru     = tambahTujuhHariPeminjaman($jatuhTempoLama);
+                        $meta = hitungMetaPeminjaman($item);
+                        $statusClass = 'status-dipinjam';
+                        $tanggalKembaliLama = (string) ($item['tanggal_kembali'] ?? '');
+                        $tanggalKembaliBaru = tambahTujuhHariPeminjaman($tanggalKembaliLama);
 
                         if ($meta['status'] === 'Dikembalikan') {
                             $statusClass = 'status-dikembalikan';
@@ -61,28 +61,28 @@ extract(PeminjamanController::index(), EXTR_SKIP);
                         }
                         ?>
                         <tr>
-                            <td><?= e($item['kode_anggota'] ?? ''); ?></td>
-                            <td><?= e($item['nama_anggota'] ?? ''); ?></td>
-                            <td><?= e($item['judul_buku'] ?? ''); ?></td>
+                            <td><?= e($item['nim'] ?? ''); ?></td>
+                            <td><?= e($item['nama'] ?? ''); ?></td>
+                            <td><?= e($item['buku'] ?? ''); ?></td>
                             <td><?= e(formatTanggal($item['tanggal_pinjam'] ?? '')); ?></td>
-                            <td><?= e(formatTanggal($item['tanggal_jatuh_tempo'] ?? '')); ?></td>
+                            <td><?= e(formatTanggal($item['tanggal_kembali'] ?? '')); ?></td>
                             <td><?= e($meta['terlambat']); ?></td>
                             <td><?= e($meta['denda']); ?></td>
                             <td>
                                 <span class="status-badge <?= e($statusClass); ?>"><?= e($meta['status']); ?></span>
                             </td>
                             <td>
-                                <?php if ($item['status_pinjam'] !== 'returned'): ?>
+                                <?php if (empty($item['returned_at'])): ?>
                                     <div class="peminjaman-action-group">
                                         <?php if (canPerpanjangPeminjaman($item)): ?>
                                             <button
                                                 type="button"
                                                 class="btn-perpanjang js-open-extend-modal"
-                                                data-id="<?= e($item['id_peminjaman'] ?? ''); ?>"
-                                                data-nama="<?= e($item['nama_anggota'] ?? ''); ?>"
-                                                data-buku="<?= e($item['judul_buku'] ?? ''); ?>"
-                                                data-tanggal-lama="<?= e(formatTanggal($jatuhTempoLama)); ?>"
-                                                data-tanggal-baru="<?= e(formatTanggal($jatuhTempoBaru)); ?>"
+                                                data-id="<?= e($item['id'] ?? ''); ?>"
+                                                data-nama="<?= e($item['nama'] ?? ''); ?>"
+                                                data-buku="<?= e($item['buku'] ?? ''); ?>"
+                                                data-tanggal-lama="<?= e(formatTanggal($tanggalKembaliLama)); ?>"
+                                                data-tanggal-baru="<?= e(formatTanggal($tanggalKembaliBaru)); ?>"
                                             >
                                                 Perpanjang
                                             </button>
@@ -93,9 +93,9 @@ extract(PeminjamanController::index(), EXTR_SKIP);
                                         <button
                                             type="button"
                                             class="btn-kembalikan js-open-return-modal"
-                                            data-id="<?= e($item['id_peminjaman'] ?? ''); ?>"
-                                            data-nama="<?= e($item['nama_anggota'] ?? ''); ?>"
-                                            data-buku="<?= e($item['judul_buku'] ?? ''); ?>"
+                                            data-id="<?= e($item['id'] ?? ''); ?>"
+                                            data-nama="<?= e($item['nama'] ?? ''); ?>"
+                                            data-buku="<?= e($item['buku'] ?? ''); ?>"
                                         >
                                             Kembalikan
                                         </button>

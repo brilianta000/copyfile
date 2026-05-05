@@ -1,15 +1,11 @@
 <?php
 
-require_once '../config/database.php';
 // Inisialisasi session admin bila belum aktif.
 if (session_status() === PHP_SESSION_NONE) {
     @session_start();
 }
 
-$db = new Database();
-$conn = $db->getConnection();
-
-$menu = $_GET['menu'] ?? 'akun';
+$menu = $_GET['menu'] ?? 'dashboard';
 
 // Daftar menu yang boleh dirender oleh router admin.
 $allowedMenus = [
@@ -52,7 +48,7 @@ $allowedMenus = [
 
 // Fallback menu jika query menu tidak dikenal.
 if (!isset($allowedMenus[$menu])) {
-    $menu = 'akun';
+    $menu = 'dashboard';
 }
 
 $currentMenu = $menu;
@@ -68,8 +64,25 @@ function localCssHref(string $href): string
     return $href . '?v=' . $version;
 }
 
+// Jalur khusus logout akun agar redirect terjadi sebelum layout HTML dirender.
+if ($currentMenu === 'akun' && isset($_GET['logout'])) {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_unset();
+        session_destroy();
+    }
+
+    header('Location: ../user/beranda.php');
+    exit;
+}
+
 // Jalur khusus export laporan agar tidak ikut merender layout admin.
 if ($currentMenu === 'laporan' && ($_GET['action'] ?? '') === 'export') {
+    include $currentFile;
+    exit;
+}
+
+// Jalur khusus POST laporan agar redirect hapus data terjadi sebelum layout HTML dirender.
+if ($currentMenu === 'laporan' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     include $currentFile;
     exit;
 }

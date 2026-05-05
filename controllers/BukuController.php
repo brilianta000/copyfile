@@ -127,7 +127,11 @@ class BukuController
         $id = (int) ($post['id'] ?? 0);
 
         if ($id > 0) {
-            $this->model->delete($id);
+            try {
+                $this->model->delete($id);
+            } catch (Throwable $e) {
+                // Buku yang sudah punya riwayat peminjaman tidak dihapus oleh database.
+            }
         }
 
         $this->redirect($this->buildUrl(

@@ -74,8 +74,9 @@ body {
     color: #ffffff;
 }
 
-.btn-add-book i {
+.btn-add-book .plus-icon {
     font-size: 15px;
+    line-height: 1;
 }
 
 .databuku-search {
@@ -152,17 +153,48 @@ body {
 
 .databuku-table-wrap {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
     border: 1px solid #e5e7eb;
     border-radius: 8px 8px 0 0;
 }
 
 .databuku-table {
     width: 100%;
-    min-width: 980px;
     border-collapse: collapse;
     table-layout: fixed;
     background: #ffffff;
+}
+
+.databuku-table .col-no {
+    width: 5%;
+}
+
+.databuku-table .col-judul {
+    width: 19%;
+}
+
+.databuku-table .col-penulis {
+    width: 16%;
+}
+
+.databuku-table .col-penerbit {
+    width: 17%;
+}
+
+.databuku-table .col-tahun {
+    width: 7%;
+}
+
+.databuku-table .col-kategori {
+    width: 14%;
+}
+
+.databuku-table .col-stok {
+    width: 6%;
+}
+
+.databuku-table .col-aksi {
+    width: 16%;
 }
 
 .databuku-table thead tr {
@@ -170,7 +202,7 @@ body {
 }
 
 .databuku-table th {
-    padding: 14px 16px;
+    padding: 14px 12px;
     border-bottom: 1px solid #e5e7eb;
     color: #003b8e;
     font-size: 12px;
@@ -180,7 +212,7 @@ body {
 }
 
 .databuku-table td {
-    padding: 14px 16px;
+    padding: 14px 12px;
     border-bottom: 1px solid #eef0f3;
     color: #111827;
     font-size: 13px;
@@ -193,46 +225,6 @@ body {
     border-bottom: 0;
 }
 
-.databuku-table th:nth-child(1),
-.databuku-table td:nth-child(1) {
-    width: 6%;
-}
-
-.databuku-table th:nth-child(2),
-.databuku-table td:nth-child(2) {
-    width: 19%;
-}
-
-.databuku-table th:nth-child(3),
-.databuku-table td:nth-child(3) {
-    width: 17%;
-}
-
-.databuku-table th:nth-child(4),
-.databuku-table td:nth-child(4) {
-    width: 15%;
-}
-
-.databuku-table th:nth-child(5),
-.databuku-table td:nth-child(5) {
-    width: 8%;
-}
-
-.databuku-table th:nth-child(6),
-.databuku-table td:nth-child(6) {
-    width: 12%;
-}
-
-.databuku-table th:nth-child(7),
-.databuku-table td:nth-child(7) {
-    width: 8%;
-}
-
-.databuku-table th:nth-child(8),
-.databuku-table td:nth-child(8) {
-    width: 15%;
-}
-
 .databuku-table td:nth-child(2),
 .databuku-table td:nth-child(3),
 .databuku-table td:nth-child(4),
@@ -242,13 +234,23 @@ body {
 }
 
 .databuku-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     white-space: nowrap;
-    overflow: visible !important;
+    overflow: hidden !important;
+}
+
+.databuku-delete-form {
+    display: flex;
+    flex: 0 0 auto;
+    margin: 0;
 }
 
 .btn-table-action {
+    flex: 0 0 auto;
     height: 32px;
-    padding: 0 12px;
+    padding: 0 9px;
     border: 1px solid #e5e7eb;
     border-radius: 5px;
     display: inline-flex;
@@ -258,19 +260,46 @@ body {
     color: #111827;
     font-size: 12px;
     cursor: pointer;
-    margin-right: 8px;
 }
 
 .btn-table-action:hover {
     background: #f8fafc;
 }
 
-.btn-table-action:last-child {
-    margin-right: 0;
+.btn-delete-book {
+    color: #b91c1c;
+}
+
+.btn-delete-book:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
 }
 
 .btn-table-action i {
     font-size: 13px;
+}
+
+@media (max-width: 1180px) {
+    .databuku-table th,
+    .databuku-table td {
+        padding-left: 8px;
+        padding-right: 8px;
+        font-size: 12px;
+    }
+
+    .databuku-actions {
+        gap: 4px;
+    }
+
+    .btn-table-action {
+        width: 30px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .btn-table-action span {
+        display: none;
+    }
 }
 
 .databuku-empty {
@@ -382,10 +411,6 @@ body {
     overflow: hidden;
 }
 
-.detail-modal-box {
-    width: 430px;
-}
-
 .book-modal-header {
     min-height: 60px;
     padding: 18px 22px;
@@ -411,30 +436,8 @@ body {
     cursor: pointer;
 }
 
-.book-detail-list,
 .book-edit-form {
     padding: 22px;
-}
-
-.book-detail-list {
-    display: grid;
-    gap: 12px;
-}
-
-.book-detail-list div {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 12px;
-    color: #334155;
-    font-size: 14px;
-}
-
-.book-detail-list span {
-    color: #64748b;
-}
-
-.book-detail-list strong {
-    font-weight: 600;
 }
 
 .book-edit-form label {

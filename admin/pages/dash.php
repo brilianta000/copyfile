@@ -1,84 +1,82 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| BACA DATA DARI JSON
-|--------------------------------------------------------------------------
-*/
-$peminjamanFile  = __DIR__ . '/data_peminjaman.json';
-$laporanFile     = __DIR__ . '/data_laporan_transaksi.json';
-$bukuFile        = __DIR__ . '/data_buku.json';
 
-$peminjaman = file_exists($peminjamanFile) ? json_decode(file_get_contents($peminjamanFile), true) : [];
-$laporan    = file_exists($laporanFile)    ? json_decode(file_get_contents($laporanFile),    true) : [];
-$buku        = file_exists($bukuFile)       ? json_decode(file_get_contents($bukuFile),       true) : [];
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Peminjaman.php';
 
-if (!is_array($peminjaman)) $peminjaman = [];
-if (!is_array($laporan))    $laporan    = [];
-if (!is_array($buku))       $buku       = [];
+$conn = (new Database())->getConnection();
+Peminjaman::updateOverdueStatuses();
 
-/*
-|--------------------------------------------------------------------------
-| HITUNG STATISTIK
-|--------------------------------------------------------------------------
-*/
-$today = date('Y-m-d');
+function dashScalar(mysqli $conn, string $sql): int
+{
+    $result = $conn->query($sql);
+    $row = $result ? $result->fetch_assoc() : [];
 
-// Total judul buku dari data buku
-$total_buku  = count($buku);
+    return (int) array_values($row ?: [0])[0];
+}
 
-// Sedang dipinjam = Belum Kembali
-$dipinjam  = count(array_filter($laporan, fn($r) => $r['status'] === 'Belum Kembali'));
+$total_buku = dashScalar($conn, 'SELECT COUNT(*) FROM buku');
+$total_stok = dashScalar($conn, 'SELECT COALESCE(SUM(total_stok), 0) FROM buku');
+$tersedia = dashScalar($conn, 'SELECT COALESCE(SUM(stok_tersedia), 0) FROM buku');
+$dipinjam = dashScalar($conn, "SELECT COUNT(*) FROM peminjaman WHERE status_pinjam IN ('borrowed', 'overdue')");
+$terlambat = dashScalar($conn, "SELECT COUNT(*) FROM peminjaman WHERE status_pinjam = 'overdue'");
+$total_anggota = dashScalar($conn, 'SELECT COUNT(*) FROM anggota');
 
-// Terlambat
-$terlambat = count(array_filter($laporan, fn($r) => $r['status'] === 'Terlambat'));
+$logs_recent = [];
+$result = $conn->query(
+    "SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_jatuh_tempo,
+            p.tanggal_kembali, p.status_pinjam,
+            a.nama_anggota, b.judul
+     FROM peminjaman p
+     JOIN anggota a ON a.id_anggota = p.id_anggota
+     JOIN buku b ON b.id_buku = p.id_buku
+     WHERE p.laporan_hidden_at IS NULL
+     ORDER BY p.id_peminjaman DESC
+     LIMIT 10"
+);
 
-// Tersedia dihitung dari stok data buku dikurangi peminjaman aktif
-$total_stok = array_sum(array_map(fn($item) => (int) ($item['stok'] ?? 0), $buku));
-$tersedia  = max(0, $total_stok - count($peminjaman));
+while ($result && $row = $result->fetch_assoc()) {
+    $status = 'Belum Kembali';
 
-// Total anggota (NIM unik)
-$total_anggota = count(array_unique(array_column($peminjaman, 'nim')));
+    if (($row['status_pinjam'] ?? '') === 'returned' || !empty($row['tanggal_kembali'])) {
+        $status = 'Dikembalikan';
+    } elseif (($row['status_pinjam'] ?? '') === 'overdue') {
+        $status = 'Terlambat';
+    }
 
-/*
-|--------------------------------------------------------------------------
-| LOG TRANSAKSI TERBARU (10 data terakhir)
-|--------------------------------------------------------------------------
-*/
-$logs_sorted = $laporan;
-usort($logs_sorted, fn($a, $b) => $b['id'] <=> $a['id']);
-$logs_recent = array_slice($logs_sorted, 0, 10);
+    $logs_recent[] = [
+        'source_id' => 'pjm_db_' . (int) ($row['id_peminjaman'] ?? 0),
+        'peminjam' => $row['nama_anggota'] ?? '',
+        'judul_buku' => $row['judul'] ?? '',
+        'tgl_pinjam' => $row['tanggal_pinjam'] ?? '',
+        'tgl_jatuh_tempo' => $row['tanggal_jatuh_tempo'] ?? '',
+        'status' => $status,
+    ];
+}
 
-/*
-|--------------------------------------------------------------------------
-| DATA GRAFIK â€” Peminjaman per bulan (6 bulan terakhir)
-|--------------------------------------------------------------------------
-*/
 $bulan_labels = [];
-$bulan_data   = [];
+$bulan_data = [];
 for ($i = 5; $i >= 0; $i--) {
-    $ts    = strtotime("-$i months");
-    $key   = date('Y-m', $ts);
+    $ts = strtotime("-$i months");
+    $key = date('Y-m', $ts);
     $label = date('M', $ts);
+    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM peminjaman WHERE DATE_FORMAT(tanggal_pinjam, '%Y-%m') = ?");
+    $stmt->bind_param('s', $key);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
     $bulan_labels[] = $label;
-    $bulan_data[]   = count(array_filter($laporan, fn($r) => str_starts_with($r['tgl_pinjam'], $key)));
+    $bulan_data[] = (int) ($row['total'] ?? 0);
 }
 $chart_max = max(max($bulan_data), 1);
 
-/*
-|--------------------------------------------------------------------------
-| INFO ADMIN (dari session jika tersedia)
-|--------------------------------------------------------------------------
-*/
 if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     @session_start();
 }
-$admin_nama    = $_SESSION['nama']    ?? 'Administrator';
+$admin_nama = $_SESSION['nama'] ?? 'Administrator';
 $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
 ?>
 
 <div class="dash-container">
 
-        <!-- STAT CARDS -->
         <div class="stat-grid">
             <div class="stat-card">
                 <div class="stat-info">
@@ -110,10 +108,8 @@ $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
             </div>
         </div>
 
-        <!-- BARIS UTAMA -->
         <div class="dash-main">
 
-            <!-- LOG TRANSAKSI TERBARU -->
             <div class="card card-log">
                 <div class="card-header-row">
                     <h6 class="card-title">Transaksi Terbaru</h6>
@@ -142,20 +138,20 @@ $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
                             <?php
                                 $statusClass = match($log['status']) {
                                     'Dikembalikan' => 'badge-kembali',
-                                    'Terlambat'    => 'badge-terlambat',
-                                    default        => 'badge-pinjam',
+                                    'Terlambat' => 'badge-terlambat',
+                                    default => 'badge-pinjam',
                                 };
-                                $idShort = substr($log['source_id'], 0, 14) . 'â€¦';
+                                $idShort = substr((string) $log['source_id'], 0, 14) . '...';
                             ?>
                             <tr>
-                                <td class="id-col" title="<?= htmlspecialchars($log['source_id']) ?>">
+                                <td class="id-col" title="<?= htmlspecialchars((string) $log['source_id']) ?>">
                                     <?= htmlspecialchars($idShort) ?>
                                 </td>
-                                <td><?= htmlspecialchars($log['peminjam']) ?></td>
-                                <td><?= htmlspecialchars($log['judul_buku']) ?></td>
-                                <td><?= htmlspecialchars($log['tgl_pinjam'] ?: '-') ?></td>
-                                <td><?= htmlspecialchars($log['tgl_jatuh_tempo'] ?: '-') ?></td>
-                                <td><span class="badge <?= $statusClass ?>"><?= htmlspecialchars($log['status']) ?></span></td>
+                                <td><?= htmlspecialchars((string) $log['peminjam']) ?></td>
+                                <td><?= htmlspecialchars((string) $log['judul_buku']) ?></td>
+                                <td><?= htmlspecialchars((string) ($log['tgl_pinjam'] ?: '-')) ?></td>
+                                <td><?= htmlspecialchars((string) ($log['tgl_jatuh_tempo'] ?: '-')) ?></td>
+                                <td><span class="badge <?= $statusClass ?>"><?= htmlspecialchars((string) $log['status']) ?></span></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -164,10 +160,8 @@ $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
                 <?php endif; ?>
             </div>
 
-            <!-- KOLOM KANAN -->
             <div class="dash-right">
 
-                <!-- GRAFIK BAR -->
                 <div class="card card-chart">
                     <h6 class="card-title">Peminjaman 6 Bulan Terakhir</h6>
                     <div class="chart-bars">
@@ -181,13 +175,12 @@ $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <span class="bar-label"><?= $lbl ?></span>
+                            <span class="bar-label"><?= htmlspecialchars($lbl) ?></span>
                         </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- ADMIN CARD -->
                 <div class="card card-admin">
                     <div class="admin-avatar"><i class="bi bi-person-circle"></i></div>
                     <div class="admin-info">
@@ -196,7 +189,7 @@ $admin_jabatan = $_SESSION['jabatan'] ?? 'Admin Perpustakaan';
                     </div>
                     <div class="admin-stats">
                         <div class="admin-stat-item">
-                            <span class="admin-stat-val"><?= count($laporan) ?></span>
+                            <span class="admin-stat-val"><?= $dipinjam + dashScalar($conn, "SELECT COUNT(*) FROM peminjaman WHERE status_pinjam = 'returned'") ?></span>
                             <span class="admin-stat-lbl">Total Transaksi</span>
                         </div>
                         <div class="admin-stat-item">

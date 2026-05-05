@@ -52,6 +52,10 @@ if (!function_exists('eTambahBuku')) {
 
             <span class="kategori-label">Kategori :</span>
             <div class="kategori-grid">
+                <?php
+                $oldKategoriValue = $oldTambahBuku['kategori'] ?? '';
+                $oldKategoriValues = is_array($oldKategoriValue) ? $oldKategoriValue : [$oldKategoriValue];
+                ?>
                 <?php foreach ($kategoriList as $kategori): ?>
                     <label class="kategori-item">
                         <input
@@ -59,7 +63,7 @@ if (!function_exists('eTambahBuku')) {
                             class="kategori-checkbox"
                             name="kategori[]"
                             value="<?= eTambahBuku($kategori); ?>"
-                            <?= (string) ($oldTambahBuku['kategori'] ?? '') === $kategori ? 'checked' : ''; ?>
+                            <?= in_array($kategori, $oldKategoriValues, true) ? 'checked' : ''; ?>
                         >
                         <span class="kategori-text"><?= eTambahBuku($kategori); ?></span>
                     </label>

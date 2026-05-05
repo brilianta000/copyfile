@@ -4,85 +4,13 @@
 | KONFIGURASI AWAL
 |--------------------------------------------------------------------------
 */
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../models/Peminjaman.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
 if (($_GET['action'] ?? '') !== 'export' && session_status() === PHP_SESSION_NONE) {
     @session_start();
-}
-$laporanFile = __DIR__ . '/data_laporan_transaksi.json';
-
-/*
-|--------------------------------------------------------------------------
-| DATA AWAL LAPORAN
-|--------------------------------------------------------------------------
-*/
-// Menyediakan data awal laporan transaksi ketika JSON belum tersedia.
-function defaultLaporanTransaksi()
-{
-    return [
-        ['id' => 1, 'tanggal' => '2024-03-29', 'peminjam' => 'Budi', 'judul_buku' => 'Atomic Habits', 'tgl_pinjam' => '2024-03-28', 'tgl_jatuh_tempo' => '2024-04-02', 'tgl_kembali' => '2024-04-02', 'status' => 'Dikembalikan'],
-        ['id' => 2, 'tanggal' => '2024-03-27', 'peminjam' => 'Fita', 'judul_buku' => 'Bumi Manusia', 'tgl_pinjam' => '2024-03-27', 'tgl_jatuh_tempo' => '2024-04-03', 'tgl_kembali' => '', 'status' => 'Terlambat'],
-        ['id' => 3, 'tanggal' => '2024-03-27', 'peminjam' => 'Ayu', 'judul_buku' => 'Filosofi Teras', 'tgl_pinjam' => '2024-03-27', 'tgl_jatuh_tempo' => '2024-04-01', 'tgl_kembali' => '', 'status' => 'Belum Kembali'],
-        ['id' => 4, 'tanggal' => '2024-03-26', 'peminjam' => 'Cahyo', 'judul_buku' => 'Orang-Orang Biasa', 'tgl_pinjam' => '2024-03-26', 'tgl_jatuh_tempo' => '2024-04-01', 'tgl_kembali' => '2024-04-01', 'status' => 'Dikembalikan'],
-        ['id' => 5, 'tanggal' => '2024-03-25', 'peminjam' => 'Nanda', 'judul_buku' => 'Laut Bercerita', 'tgl_pinjam' => '2024-03-25', 'tgl_jatuh_tempo' => '2024-03-30', 'tgl_kembali' => '', 'status' => 'Terlambat'],
-        ['id' => 6, 'tanggal' => '2024-03-24', 'peminjam' => 'Rina', 'judul_buku' => 'Negeri 5 Menara', 'tgl_pinjam' => '2024-03-24', 'tgl_jatuh_tempo' => '2024-03-31', 'tgl_kembali' => '', 'status' => 'Belum Kembali'],
-        ['id' => 7, 'tanggal' => '2024-03-22', 'peminjam' => 'Dimas', 'judul_buku' => 'Sapiens', 'tgl_pinjam' => '2024-03-22', 'tgl_jatuh_tempo' => '2024-03-29', 'tgl_kembali' => '2024-03-28', 'status' => 'Dikembalikan'],
-        ['id' => 8, 'tanggal' => '2024-03-20', 'peminjam' => 'Lina', 'judul_buku' => 'Ayat-Ayat Cinta', 'tgl_pinjam' => '2024-03-20', 'tgl_jatuh_tempo' => '2024-03-27', 'tgl_kembali' => '', 'status' => 'Belum Kembali'],
-        ['id' => 9, 'tanggal' => '2024-03-18', 'peminjam' => 'Fajar', 'judul_buku' => 'Madilog', 'tgl_pinjam' => '2024-03-18', 'tgl_jatuh_tempo' => '2024-03-25', 'tgl_kembali' => '', 'status' => 'Terlambat'],
-        ['id' => 10, 'tanggal' => '2024-03-15', 'peminjam' => 'Salsa', 'judul_buku' => 'Rich Dad Poor Dad', 'tgl_pinjam' => '2024-03-15', 'tgl_jatuh_tempo' => '2024-03-22', 'tgl_kembali' => '2024-03-21', 'status' => 'Dikembalikan'],
-        ['id' => 11, 'tanggal' => '2024-03-12', 'peminjam' => 'Yoga', 'judul_buku' => 'Cantik Itu Luka', 'tgl_pinjam' => '2024-03-12', 'tgl_jatuh_tempo' => '2024-03-19', 'tgl_kembali' => '', 'status' => 'Belum Kembali'],
-        ['id' => 12, 'tanggal' => '2024-03-10', 'peminjam' => 'Mira', 'judul_buku' => 'Bumi', 'tgl_pinjam' => '2024-03-10', 'tgl_jatuh_tempo' => '2024-03-17', 'tgl_kembali' => '2024-03-16', 'status' => 'Dikembalikan'],
-    ];
-}
-
-// Membaca data laporan transaksi dari JSON.
-function loadLaporanTransaksi($file)
-{
-    if (!file_exists($file)) {
-        $default = defaultLaporanTransaksi();
-        file_put_contents($file, json_encode($default, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-        return $default;
-    }
-
-    $json = file_get_contents($file);
-    $data = json_decode($json, true);
-
-    if (!is_array($data)) {
-        $default = defaultLaporanTransaksi();
-        file_put_contents($file, json_encode($default, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
-        return $default;
-    }
-
-    return $data;
-}
-
-// Menyimpan data laporan transaksi ke JSON.
-function saveLaporanTransaksi($file, $data)
-{
-    file_put_contents(
-        $file,
-        json_encode(array_values($data), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
-        LOCK_EX
-    );
-}
-
-// Memperbarui status laporan sesuai tanggal kembali dan jatuh tempo.
-function refreshStatusLaporan(array $item)
-{
-    if (!empty($item['tgl_kembali'])) {
-        $item['status'] = 'Dikembalikan';
-        return $item;
-    }
-
-    $jatuhTempo = $item['tgl_jatuh_tempo'] ?? '';
-    $item['status'] = ($jatuhTempo !== '' && strtotime(date('Y-m-d')) > strtotime($jatuhTempo))
-        ? 'Terlambat'
-        : 'Belum Kembali';
-
-    return $item;
 }
 
 /*
@@ -103,7 +31,8 @@ function formatTanggal($tanggal)
         return '-';
     }
 
-    return date('d M Y', strtotime($tanggal));
+    $timestamp = strtotime((string) $tanggal);
+    return $timestamp ? date('d M Y', $timestamp) : '-';
 }
 
 // Memformat tanggal khusus untuk export PDF.
@@ -113,7 +42,8 @@ function formatTanggalPdf($tanggal)
         return '-';
     }
 
-    return date('d-m-Y', strtotime($tanggal));
+    $timestamp = strtotime((string) $tanggal);
+    return $timestamp ? date('d-m-Y', $timestamp) : '-';
 }
 
 // Mengambil nama menu aktif untuk URL laporan.
@@ -232,6 +162,10 @@ function getLogoPolijeDataUri(): string
 // Menghitung denda laporan berdasarkan keterlambatan.
 function hitungDendaLaporan(array $row): string
 {
+    if (isset($row['denda_nominal'])) {
+        return 'Rp ' . number_format((float) $row['denda_nominal'], 0, ',', '.');
+    }
+
     $jatuhTempo = $row['tgl_jatuh_tempo'] ?? '';
 
     if ($jatuhTempo === '') {
@@ -251,7 +185,7 @@ function hitungDendaLaporan(array $row): string
 }
 
 // Membuat HTML laporan yang akan dipakai untuk PDF.
-function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword, $autoPrint = false, $showPrintNote = false)
+function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword)
 {
     $styles = getPdfStyles();
     $logoDataUri = getLogoPolijeDataUri();
@@ -303,13 +237,13 @@ function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword
                     <?php foreach ($laporan as $index => $row): ?>
                         <tr>
                             <td class="text-center"><?= (int) $index + 1 ?>.</td>
-                            <td><?= escape($row['peminjam']) ?></td>
-                            <td><?= escape($row['judul_buku']) ?></td>
-                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_pinjam'])) ?></td>
-                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_jatuh_tempo'])) ?></td>
-                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_kembali'])) ?></td>
+                            <td><?= escape($row['peminjam'] ?? '') ?></td>
+                            <td><?= escape($row['judul_buku'] ?? '') ?></td>
+                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_pinjam'] ?? '')) ?></td>
+                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_jatuh_tempo'] ?? '')) ?></td>
+                            <td class="text-center"><?= escape(formatTanggalPdf($row['tgl_kembali'] ?? '')) ?></td>
                             <td class="text-center"><?= escape(hitungDendaLaporan($row)) ?></td>
-                            <td class="text-center"><?= escape($row['status']) ?></td>
+                            <td class="text-center"><?= escape($row['status'] ?? '') ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -327,7 +261,7 @@ function buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword
 // Membuat dan mengirim file PDF laporan.
 function exportLaporanPdf($laporan, $statusFilter, $startDate, $endDate, $keyword)
 {
-    $html = buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword, false, false);
+    $html = buildExportHtml($laporan, $statusFilter, $startDate, $endDate, $keyword);
 
     $options = new Options();
     $options->set('defaultFont', 'DejaVu Sans');
@@ -349,18 +283,9 @@ function exportLaporanPdf($laporan, $statusFilter, $startDate, $endDate, $keywor
 */
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['delete_selected'])) {
     $selectedIds = array_map('intval', $_POST['selected_ids'] ?? []);
-    $laporanData = loadLaporanTransaksi($laporanFile);
 
-    // Hapus hanya data yang dipilih melalui checkbox tabel.
     if (!empty($selectedIds)) {
-        $laporanData = array_values(array_filter(
-            $laporanData,
-            function ($item) use ($selectedIds) {
-                return !in_array((int) ($item['id'] ?? 0), $selectedIds, true);
-            }
-        ));
-
-        saveLaporanTransaksi($laporanFile, $laporanData);
+        Peminjaman::hideReports($selectedIds);
     }
 
     $returnQuery = trim($_POST['return_query'] ?? '');
@@ -381,47 +306,21 @@ $keyword = trim($_GET['keyword'] ?? '');
 $page = max(1, (int) ($_GET['page'] ?? 1));
 $perPage = normalizeLaporanPerPage($_GET['per_page'] ?? 5);
 
-$semuaLaporan = array_map('refreshStatusLaporan', loadLaporanTransaksi($laporanFile));
-saveLaporanTransaksi($laporanFile, $semuaLaporan);
+$semuaLaporan = Peminjaman::reportRows('Semua', '', '', '', false);
 
 /*
 |--------------------------------------------------------------------------
 | Data dashboard: hanya ikut filter tanggal
 |--------------------------------------------------------------------------
 */
-$laporanDashboard = array_values(array_filter($semuaLaporan, function ($item) use ($startDate, $endDate) {
-    if ($startDate !== '' && strtotime($item['tanggal']) < strtotime($startDate)) {
-        return false;
-    }
-
-    if ($endDate !== '' && strtotime($item['tanggal']) > strtotime($endDate)) {
-        return false;
-    }
-
-    return true;
-}));
+$laporanDashboard = Peminjaman::reportRows('Semua', $startDate, $endDate, '', false);
 
 /*
 |--------------------------------------------------------------------------
 | Data tabel: ikut filter tanggal + status + keyword
 |--------------------------------------------------------------------------
 */
-$laporan = array_values(array_filter($laporanDashboard, function ($item) use ($statusFilter, $keyword) {
-    if ($statusFilter !== 'Semua' && $item['status'] !== $statusFilter) {
-        return false;
-    }
-
-    if ($keyword !== '') {
-        $cocokPeminjam = stripos($item['peminjam'], $keyword) !== false;
-        $cocokBuku = stripos($item['judul_buku'], $keyword) !== false;
-
-        if (!$cocokPeminjam && !$cocokBuku) {
-            return false;
-        }
-    }
-
-    return true;
-}));
+$laporan = Peminjaman::reportRows($statusFilter, $startDate, $endDate, $keyword, false);
 
 if (isset($_GET['action']) && $_GET['action'] === 'export') {
     // Export memakai data laporan yang sudah mengikuti filter aktif.
@@ -434,9 +333,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'export') {
 |--------------------------------------------------------------------------
 */
 $totalPeminjaman = count($laporanDashboard);
-$totalDikembalikan = count(array_filter($laporanDashboard, fn($item) => $item['status'] === 'Dikembalikan'));
-$totalTerlambat = count(array_filter($laporanDashboard, fn($item) => $item['status'] === 'Terlambat'));
-$totalBelumKembali = count(array_filter($laporanDashboard, fn($item) => $item['status'] === 'Belum Kembali'));
+$totalDikembalikan = count(array_filter($laporanDashboard, fn($item) => ($item['status'] ?? '') === 'Dikembalikan'));
+$totalTerlambat = count(array_filter($laporanDashboard, fn($item) => ($item['status'] ?? '') === 'Terlambat'));
+$totalBelumKembali = count(array_filter($laporanDashboard, fn($item) => ($item['status'] ?? '') === 'Belum Kembali'));
 
 /*
 |--------------------------------------------------------------------------
@@ -455,15 +354,6 @@ $returnQuery = buatQuery([], ['action']);
 | TEMPLATE HALAMAN LAPORAN TRANSAKSI
 |--------------------------------------------------------------------------
 -->
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Transaksi</title>
-    <link rel="stylesheet" href="laporantransaksi.css">
-</head>
-<body>
     <div class="page-wrapper">
         <header class="page-header">
             <h1>Laporan Transaksi</h1>
@@ -609,15 +499,15 @@ $returnQuery = buatQuery([], ['action']);
                                 <?php foreach ($dataTampil as $row): ?>
                                     <tr>
                                         <td class="checkbox-column">
-                                            <input type="checkbox" name="selected_ids[]" value="<?= (int) $row['id'] ?>" class="row-checkbox">
+                                            <input type="checkbox" name="selected_ids[]" value="<?= (int) ($row['id'] ?? 0) ?>" class="row-checkbox">
                                         </td>
-                                        <td><?= escape(formatTanggal($row['tanggal'])) ?></td>
-                                        <td><?= escape($row['peminjam']) ?></td>
-                                        <td><?= escape($row['judul_buku']) ?></td>
-                                        <td><?= escape(formatTanggal($row['tgl_pinjam'])) ?></td>
-                                        <td><?= escape(formatTanggal($row['tgl_jatuh_tempo'])) ?></td>
-                                        <td><?= escape(formatTanggal($row['tgl_kembali'])) ?></td>
-                                        <td><span class="status-badge <?= getStatusClass($row['status']) ?>"><?= escape($row['status']) ?></span></td>
+                                        <td><?= escape(formatTanggal($row['tanggal'] ?? '')) ?></td>
+                                        <td><?= escape($row['peminjam'] ?? '') ?></td>
+                                        <td><?= escape($row['judul_buku'] ?? '') ?></td>
+                                        <td><?= escape(formatTanggal($row['tgl_pinjam'] ?? '')) ?></td>
+                                        <td><?= escape(formatTanggal($row['tgl_jatuh_tempo'] ?? '')) ?></td>
+                                        <td><?= escape(formatTanggal($row['tgl_kembali'] ?? '')) ?></td>
+                                        <td><span class="status-badge <?= getStatusClass($row['status'] ?? '') ?>"><?= escape($row['status'] ?? '') ?></span></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>

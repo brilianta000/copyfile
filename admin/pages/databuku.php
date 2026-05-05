@@ -13,8 +13,8 @@ extract($bukuController->index(), EXTR_SKIP);
     <!-- Toolbar tambah, pencarian, dan filter buku -->
     <div class="databuku-toolbar">
         <a href="?menu=tambahbuku" class="btn-add-book">
-            <i class="bi bi-plus"></i>
-            <span>Tambah Buku</span>
+            <span class="plus-icon">+</span>
+            Tambah Buku
         </a>
 
         <form method="get" class="databuku-search">
@@ -46,6 +46,16 @@ extract($bukuController->index(), EXTR_SKIP);
     <!-- Tabel daftar buku dan tombol aksi -->
     <div class="databuku-table-wrap">
         <table class="databuku-table">
+            <colgroup>
+                <col class="col-no">
+                <col class="col-judul">
+                <col class="col-penulis">
+                <col class="col-penerbit">
+                <col class="col-tahun">
+                <col class="col-kategori">
+                <col class="col-stok">
+                <col class="col-aksi">
+            </colgroup>
             <thead>
                 <tr>
                     <th>No.</th>
@@ -89,14 +99,23 @@ extract($bukuController->index(), EXTR_SKIP);
                                     <i class="bi bi-pencil"></i>
                                     <span>Edit</span>
                                 </button>
-                                <button
-                                    type="button"
-                                    class="btn-table-action js-detail-book"
-                                    data-book='<?= eBuku(json_encode($bookPayload, JSON_UNESCAPED_UNICODE)); ?>'
+                                <form
+                                    method="post"
+                                    action="actions/buku/delete.php"
+                                    class="databuku-delete-form"
+                                    onsubmit="return confirm('Yakin ingin menghapus buku ini?')"
                                 >
-                                    <i class="bi bi-search"></i>
-                                    <span>Detail</span>
-                                </button>
+                                    <input type="hidden" name="action" value="delete_buku">
+                                    <input type="hidden" name="id" value="<?= (int) $book['id']; ?>">
+                                    <input type="hidden" name="page" value="<?= (int) $currentPage; ?>">
+                                    <input type="hidden" name="q" value="<?= eBuku($search); ?>">
+                                    <input type="hidden" name="kategori_filter" value="<?= eBuku($kategoriFilter); ?>">
+                                    <input type="hidden" name="per_page" value="<?= (int) $perPage; ?>">
+                                    <button type="submit" class="btn-table-action btn-delete-book">
+                                        <i class="bi bi-trash"></i>
+                                        <span>Hapus</span>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -143,26 +162,6 @@ extract($bukuController->index(), EXTR_SKIP);
         </div>
     </div>
 </section>
-
-<!-- Modal detail buku -->
-<div class="book-modal" id="detailBookModal" aria-hidden="true">
-    <div class="book-modal-box detail-modal-box">
-        <div class="book-modal-header">
-            <h2>Detail Buku</h2>
-            <button type="button" class="book-modal-close js-close-book-modal" aria-label="Tutup">&times;</button>
-        </div>
-        <div class="book-detail-list">
-            <div><span>Judul Buku</span><strong id="detailJudul">-</strong></div>
-            <div><span>Penulis</span><strong id="detailPenulis">-</strong></div>
-            <div><span>Penerbit</span><strong id="detailPenerbit">-</strong></div>
-            <div><span>Tahun</span><strong id="detailTahun">-</strong></div>
-            <div><span>Kategori :</span><strong id="detailKategori">-</strong></div>
-            <div><span>Stok Total</span><strong id="detailStok">-</strong></div>
-            <div><span>Dipinjam</span><strong id="detailDipinjam">-</strong></div>
-            <div><span>Tersedia</span><strong id="detailTersedia">-</strong></div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal edit buku -->
 <div class="book-modal" id="editBookModal" aria-hidden="true">
@@ -214,12 +213,11 @@ extract($bukuController->index(), EXTR_SKIP);
     </div>
 </div>
 
-<!-- Script modal detail/edit dan filter Data Buku -->
+<!-- Script modal edit dan filter Data Buku -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const filterForm = document.getElementById('filterBukuForm');
     const filterSelect = filterForm ? filterForm.querySelector('select') : null;
-    const detailModal = document.getElementById('detailBookModal');
     const editModal = document.getElementById('editBookModal');
 
     if (filterSelect) {
@@ -228,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Membuka modal detail atau edit buku.
+    // Membuka modal edit buku.
     function openModal(modal) {
         if (!modal) return;
         modal.classList.add('show');
@@ -253,21 +251,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return {};
         }
     }
-
-    document.querySelectorAll('.js-detail-book').forEach(function (button) {
-        button.addEventListener('click', function () {
-            const book = parseBook(button);
-            document.getElementById('detailJudul').textContent = book.judul || '-';
-            document.getElementById('detailPenulis').textContent = book.penulis || '-';
-            document.getElementById('detailPenerbit').textContent = book.penerbit || '-';
-            document.getElementById('detailTahun').textContent = book.tahun || '-';
-            document.getElementById('detailKategori').textContent = book.kategori || '-';
-            document.getElementById('detailStok').textContent = book.stok || '-';
-            document.getElementById('detailDipinjam').textContent = book.dipinjam || '0';
-            document.getElementById('detailTersedia').textContent = book.stok_tersedia || '0';
-            openModal(detailModal);
-        });
-    });
 
     document.querySelectorAll('.js-edit-book').forEach(function (button) {
         button.addEventListener('click', function () {
